@@ -36,3 +36,5 @@
     transform: rotate(360deg);
   }
 }
+
+@import url("./styles/searchbar.css")
