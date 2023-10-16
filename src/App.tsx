@@ -4,6 +4,7 @@ import './App.css';
 import Searchbar from './components/Searchbar'
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
+import Signin from './components/Signin'
 
 
 //sign in sign up, home page, results, results:id 
@@ -25,7 +26,7 @@ function App() {
               <Route></Route>
               <Route></Route>
               <Route></Route>
-              <Route></Route>
+              <Route path="/auth/signin" element={<Signin/>} />
               </Routes>
     </div>
   );
