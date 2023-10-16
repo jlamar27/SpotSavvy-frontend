@@ -2,6 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Searchbar from './components/Searchbar'
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar'
+
+
+//sign in sign up, home page, results, results:id 
+
 import Signup from './components/Signup';
 
 function App() {
@@ -13,10 +19,15 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hello World</h1>
-      <Searchbar onSearch={handleSearch}/>
+              <Navbar />
+              <Routes>
+              <Route></Route>
+              <Route></Route>
+              <Route></Route>
+              <Route></Route>
+              <Route></Route>
+              </Routes>
     </div>
-    hello world
   );
 }
 
