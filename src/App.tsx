@@ -28,7 +28,6 @@ function App() {
               <Route></Route>
               </Routes>
     </div>
-    hello world
   );
 }
 
