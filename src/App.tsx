@@ -8,6 +8,7 @@ import Navbar from './components/Navbar'
 
 //sign in sign up, home page, results, results:id 
 
+import Signup from './components/Signup';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
               <Route></Route>
               </Routes>
     </div>
+    hello world
   );
 }
 
