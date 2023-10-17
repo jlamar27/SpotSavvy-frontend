@@ -8,6 +8,7 @@ import Business from './components/Business';
 import ResultsPage from './components/ResultsPage';
 import Signup from './components/Signup';
 import api from './http/httpConfig';
+import Review from './components/Review';
 
 
 type Business = {
@@ -42,13 +43,17 @@ function App() {
     }
   };
 
+
+
   return (
     <div className="App">
       <Navbar onSearch={handleSearch} />
       <Routes>
-        <Route path="biz/:id" element={<Business/>}></Route>
-        <Route path="/auth/signup" element={<Signup/>}></Route>
-        <Route path="/auth/signin" element={<Signin/>}></Route>
+        <Route></Route>
+        <Route path='/writeareview/biz/:id' element={<Review />} />
+        <Route path='/biz/:id' element={<Business />} />
+        <Route path='/auth/signup' element={<Signup />} />
+        <Route path="/auth/signin" element={<Signin />} />
         <Route path="/results" element={<ResultsPage term={term} location={location} results={searchResults} />} />
       </Routes>
     </div>
