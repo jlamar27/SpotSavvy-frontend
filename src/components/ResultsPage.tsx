@@ -1,64 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import api from '../http/httpConfig';
+import React, {useEffect, useState} from 'react'
+import api from '../http/httpConfig'
+import { url } from 'inspector'
+import { request } from 'http'
 
-interface Business {
-  id: string;
-  name: string;
-  // Add other properties of a Business here as needed
+interface ResultData {
+  term: string
+  location: string
+
 }
 
-interface ResultsPageProps {
-  term: string;
-  location: string;
-  results: Business[];
-}
 
-const ResultsPage: React.FC<ResultsPageProps> = ({ term, location }) => {
-  const [results, setResults] = useState<Business[]>([]);
-  const [error, setError] = useState<string | null>(null);
+export default function ResultsPage() {
+  const [results, setResults] = useState<ResultData | null>(null)
+  console.log('here', results)
 
-  // Function to fetch search results
-  async function fetchResults() {
-    try {
-      const response = await api.get('/businesses/search', {
-        params: {
-          term: term,
-          location: location,
-          limit: 20,
-        },
-      });
-
-      if (response.data && response.data.businesses) {
-        setResults(response.data.businesses);
-      } else {
-        throw new Error('Unexpected response format');
-      }
-    } catch (err: any) { // Explicitly type 'err' as 'any'
-      setError(err.message || 'An unknown error occurred');
-      console.error('There was an error fetching the data: ', err);
-    }
-  }
-
-  // Fetch data when the component mounts
   useEffect(() => {
-    fetchResults();
-  }, [term, location]);
+    async function getResults(): Promise<any> {
+      try {
+        const response = await api.get(`/businesses/search?location=New%20York&term=burgers&sort_by=best_match`)
+        setResults(response.data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    getResults()
+  }, [])
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
+
 
   return (
-    <div>
-      <h1>Search Results</h1>
-      {results.map((business) => (
-        <div key={business.id}>
-          <h2>{business.name}</h2>
-          {/* Add other business details you want to display here */}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default ResultsPage;
+    <div>ResultsPage</div>
+  )
+}

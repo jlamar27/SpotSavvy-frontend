@@ -54,7 +54,8 @@ function App() {
         <Route path='/biz/:id' element={<Business />} />
         <Route path='/auth/signup' element={<Signup />} />
         <Route path="/auth/signin" element={<Signin />} />
-        <Route path="/results" element={<ResultsPage term={term} location={location} results={searchResults} />} />
+        {/* <Route path="/results" element={<ResultsPage term={term} location={location} results={searchResults} />} /> */}
+        <Route path="/results" element={<ResultsPage/>} />
       </Routes>
     </div>
   );
