@@ -4,7 +4,7 @@ import SearchBar from './Searchbar'
 
 export default function Navbar() {
 
-    const handleSearch = (term: string, location: string) => {
+    const handleSearch = async (term: string, location: string) => {
         console.log(`Term: ${term}, location: ${location}`)
     }
   return (
