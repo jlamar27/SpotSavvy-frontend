@@ -5,6 +5,7 @@ import Searchbar from './components/Searchbar'
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Signin from './components/Signin'
+import Business from './components/Business';
 
 
 //sign in sign up, home page, results, results:id 
@@ -20,14 +21,15 @@ function App() {
 
   return (
     <div className="App">
-              <Navbar />
-              <Routes>
-              <Route></Route>
-              <Route></Route>
-              <Route></Route>
-              <Route></Route>
-              <Route path="/auth/signin" element={<Signin/>} />
-              </Routes>
+      <Navbar />
+
+      <Routes>
+      <Route></Route>
+      <Route></Route>
+      <Route path='/biz/:id' element={<Business/>}></Route>
+      <Route path='/auth/signup' element={<Signup/>} />
+      <Route path="/auth/signin" element={<Signin/>} />
+      </Routes>
     </div>
   );
 }
