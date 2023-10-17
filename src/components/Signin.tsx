@@ -14,7 +14,7 @@ export default function Signin() {
     <div>
         <div className='signin-container'>
             <h1 className='signin-title'>Sign In</h1>
-            <form onSubmit={handleSubmit}></form>
+            <form onSubmit={handleSubmit}>
                 <input
                 type="text"
                 placeholder='Username'
@@ -28,6 +28,7 @@ export default function Signin() {
                 onChange={e => setPassword(e.target.value)}
                 />
                 <button className='signin-button'>Signin</button>
+            </form>
         </div>
     </div>
   )
