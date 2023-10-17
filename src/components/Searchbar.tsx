@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 interface SearchBarProps {
-  onSearch: (term: string, location: string) => void;
+  onSearch: (term: string, location: string) => Promise<void>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [term, setTerm] = useState<string>('');
   const [location, setLocation] = useState<string>('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    onSearch(term, location);
+    console.log('Term:', term);
+    console.log('Location:', location);
+    await onSearch(term, location);
+    navigate('/results')
   };
+
+  const handleSearch = (term: string, location: string) => {
+    console.log(`Searching for ${term} in ${location}`) 
+    // Make our api requests here
+   }
 
   return (
     <form className="search-bar" onSubmit={handleSubmit}>
@@ -29,6 +39,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       />
       <button type="submit">Search</button>
     </form>
+    
   );
 };
 

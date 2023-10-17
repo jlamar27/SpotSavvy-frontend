@@ -1,0 +1,30 @@
+.navbar {
+    text-align: center;
+  }
+  
+  .navbar-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* if you want to align the items vertically */
+    padding: 0 10px; /* if you want some space on the sides */
+  }
+  
+  .navbar-link {
+    margin: 0 15px; /* or however much space you want between items */
+    text-decoration: none; /* if you don't want underlined links */
+    color: black; /* if your links are not already styled */
+  }
+  
+  /* You might not need these next two styles if your links look correct without them */
+  .home-link {
+    margin-right: auto; /* forces the following content to the right */
+  }
+  
+  .signin-link {
+    margin-left: auto; /* forces the preceding content to the left */
+  }
+  
+  .navbar-links {
+    margin-top: 10px; /* if you want space between this and the main bar */
+  }
+  
