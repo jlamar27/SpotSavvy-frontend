@@ -5,6 +5,7 @@ import Searchbar from './components/Searchbar'
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Signin from './components/Signin'
+import Business from './components/Business';
 import Results from './components/Results'
 import Signup from './components/Signup';
 
@@ -28,12 +29,15 @@ function App() {
   
   return (
     <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/auth/signin" element={<Signin />} />
-          <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/results" element={<Results results={searchResults} />} /> 
-        </Routes>
+      <Navbar />
+      <Routes>
+      <Route></Route>
+      <Route></Route>
+      <Route path='/biz/:id' element={<Business/>}></Route>
+      <Route path='/auth/signup' element={<Signup/>} />
+      <Route path="/auth/signin" element={<Signin/>} />
+      <Route path="/results" element={<Results results={searchResults} />} /> 
+      </Routes>
     </div>
   );
 }

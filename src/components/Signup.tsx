@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 // import { signup } from '../api/auth'
 
 export default function SignUp() {
@@ -25,13 +26,10 @@ export default function SignUp() {
     }
 
     return (
-
         <div>
             <div className='signup-container'>
                 <h1 className='signup-title'>Signup</h1>
-
                 <form action="" onSubmit={handleSubmit}>
-                    
                     <div className='username-password'>
                         <input
                             type="text"
@@ -46,7 +44,6 @@ export default function SignUp() {
                             onChange={e => setPassword(e.target.value)}
                         />
                     </div>
-
                     <div className='location'>
                         <input
                             type="number"
@@ -55,11 +52,12 @@ export default function SignUp() {
                             onChange={handleLocationChange}
                         />
                     </div>
-
                     <button>Signup</button>
                 </form>
-
-
+                <span className='signup-alt'>
+                    {'Already a user? '}
+                    <Link to="/auth/signin">Go to Sign In</Link>
+                </span>
             </div>
         </div>
     )

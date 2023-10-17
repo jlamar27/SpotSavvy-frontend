@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
+
+
 export default function Signin() {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
+
     async function handleSubmit(e:React.FormEvent) {
         e.preventDefault()
         try {
@@ -10,6 +13,7 @@ export default function Signin() {
         } catch (err){
         }
     }
+
   return (
     <div>
         <div className='signin-container'>
@@ -28,7 +32,9 @@ export default function Signin() {
                 onChange={e => setPassword(e.target.value)}
                 />
                 <button className='signin-button'>Signin</button>
+
             </form>
+            <span></span>
         </div>
     </div>
   )
