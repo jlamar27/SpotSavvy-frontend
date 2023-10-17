@@ -32,7 +32,6 @@ function App() {
         <Routes>
           <Route path="/auth/signin" element={<Signin />} />
           <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/" element={<Searchbar onSearch={handleSearch} />} /> 
           <Route path="/results" element={<Results results={searchResults} />} /> 
         </Routes>
     </div>
