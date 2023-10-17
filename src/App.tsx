@@ -1,42 +1,55 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Searchbar from './components/Searchbar'
+import Searchbar from './components/Searchbar';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar'
-import Signin from './components/Signin'
+import Navbar from './components/Navbar';
+import Signin from './components/Signin';
 import Business from './components/Business';
-import Results from './components/Results'
+import ResultsPage from './components/ResultsPage';
 import Signup from './components/Signup';
+import api from './http/httpConfig';
 
 
-//results:id for the results page aka the buisness profile
-
+type Business = {
+  id: string;
+  name: string;
+  // Add other properties based on the actual data structure
+};
 
 function App() {
+  const [searchResults, setSearchResults] = useState<Business[]>([]);
+  const [location, setLocation] = useState<string>(''); 
+  const [term, setTerm] = useState<string>(''); // Initialize term as an empty string
 
-  const [searchResults, setSearchResults] = useState([])
+
   const handleSearch = async (term: string, location: string) => {
     try {
-      const response = await fetch('apikey')
-      const data = await response.json();
-      setSearchResults(data);
-    }catch (error) {
-      console.error("There was a problem fetching")
-    }
-  }
+      const response = await api.get('/businesses/search', {
+        params: {
+          term: term,
+          location: location,
+          limit: 20,
+        },
+      });
 
-  
+      if (response.data && response.data.businesses) {
+        setSearchResults(response.data.businesses);
+      } else {
+        throw new Error('Unexpected response format');
+      }
+    } catch (error) {
+      console.error("There was a problem fetching the data:", error);
+    }
+  };
+
   return (
     <div className="App">
-      <Navbar />
+      <Navbar onSearch={handleSearch} />
       <Routes>
-      <Route></Route>
-      <Route></Route>
-      <Route path='/biz/:id' element={<Business/>}></Route>
-      <Route path='/auth/signup' element={<Signup/>} />
-      <Route path="/auth/signin" element={<Signin/>} />
-      <Route path="/results" element={<Results results={searchResults} />} /> 
+        <Route path="biz/:id" element={<Business/>}></Route>
+        <Route path="/auth/signup" element={<Signup/>}></Route>
+        <Route path="/auth/signin" element={<Signin/>}></Route>
+        <Route path="/results" element={<ResultsPage term={term} location={location} results={searchResults} />} />
       </Routes>
     </div>
   );
