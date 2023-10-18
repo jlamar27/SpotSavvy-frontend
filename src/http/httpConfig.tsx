@@ -1,6 +1,7 @@
 // Packages
 import axios from "axios";
 
+
 // Based on environment set api url
 const API_URL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/";
 const apiKey = process.env.REACT_APP_YELP_TOKEN;
@@ -9,7 +10,7 @@ const apiKey = process.env.REACT_APP_YELP_TOKEN;
 const api = axios.create({
   baseURL: API_URL,
 });
-
+console.log(API_URL, apiKey)
 // Interceptors are axios functionality, that allows you to intercept requests and responses
 // Here we're setting the token in localstorage to the Authorization header
 api.interceptors.request.use((config) => {
