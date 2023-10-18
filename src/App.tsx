@@ -50,7 +50,7 @@ function App() {
       <Navbar onSearch={handleSearch} />
       <Routes>
         <Route></Route>
-        <Route path='/writeareview/biz/:id' element={<Review />} />
+        <Route path="/reviews/:reviewId" element={<Review />} />
         <Route path='/biz/:id' element={<Business />} />
         <Route path='/auth/signup' element={<Signup />} />
         <Route path="/auth/signin" element={<Signin />} />
