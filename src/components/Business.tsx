@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import api from '../http/httpConfig'
+import { error } from 'console';
 
 interface BusinessData {
   name: string;
@@ -8,11 +9,15 @@ interface BusinessData {
 }
 
 
+
 function Business() {
   const [business, setBusiness] = useState<BusinessData | null>(null)
   // id should be passed in from results page
   const id = 'gaeJZeZmKalQhcPFjbPrPg'
   const navigate = useNavigate();
+  const [review, setReview] = useState('')
+  const [rating, setRating] = useState('')
+  const [image, setImage] = useState<File | null>(null)
 
 
 
@@ -20,9 +25,10 @@ function Business() {
   useEffect(() => {
     async function getBusiness(): Promise<any> {
       try {
-        const response = await api.get(`/businesses/${id}`)
-        setBusiness(response.data)
-        // console.log(business)
+        // remove the additional /
+        const yelpResponse = await api.get(`//businesses/${id}`)
+        setBusiness(yelpResponse.data)
+        console.log('business obj', business)
       } catch (error) {
         console.error(error)
       }
@@ -30,10 +36,49 @@ function Business() {
     getBusiness()
   }, [])
 
-  const handleWriteReview = () => {
-    navigate(`/writeareview/biz/${id}`)
-  };
 
+  async function handleReviewSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    try {
+      const reviewData = new FormData();
+      if (image) {
+        reviewData.append('image', image);
+      }
+      reviewData.append('review', review);
+      reviewData.append('rating', rating);
+      reviewData.append('id', id)
+
+      const reviewObject : {[key: string]: any} = {}
+      reviewData.forEach((value,key) => {
+        reviewObject[key] = value
+
+      console.log(reviewObject)
+      const newReviewId = 1
+      navigate(`/reviews/${newReviewId}`)
+      });
+      
+      // const response = await axios.post(`endpoint to create a review`, reviewObject);
+
+      // if(response.status === 201 && response.data.review_id) {
+      //    const newReviewId = response.data.review_id;
+            // navigate(`/reviews/${newReviewId}`
+
+    }catch (err) {
+      // console.error(error)
+    }
+
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+
+    if (files && files.length > 0){
+      const selectedImage = files[0]
+      setImage(selectedImage)
+    }
+  }
+
+  
 
   return (
     <div>
@@ -41,12 +86,25 @@ function Business() {
       <img src={business?.image_url} alt={business?.name} />
 
       <div className='review-container'>
-        <button
-          className='review-button'
-          onClick={handleWriteReview}
+      <form onSubmit={handleReviewSubmit} >
+        <label htmlFor="review">Leave a review</label>
+        <textarea name="review" id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
+        <label htmlFor="imageInput">Attach A Photo</label>
+        <input type="file" id='imageInput' name='image' accept='image/*' onChange={handleImageChange} />
+        <label htmlFor="rating">Select Rating:</label>
+        <select 
+        name="rating" 
+        id="rating"
+        onChange={(e) => setRating(e.target.value)}
         >
-          Write a review
-        </button>
+        {[1,2,3,4,5].map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+        </select>
+        <button>Post Review</button>
+      </form>
         // to save as favorites
         <button >Save</button>
       </div>

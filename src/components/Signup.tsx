@@ -10,7 +10,6 @@ export default function SignUp() {
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-
         try {
             const response = {username, password, location}
             console.log(response)
@@ -29,19 +28,21 @@ export default function SignUp() {
         <div>
             <div className='signup-container'>
                 <h1 className='signup-title'>Signup</h1>
-                <form action="" onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div className='username-password'>
                         <input
                             type="text"
                             placeholder='Username'
                             value={username}
                             onChange={e => setUsername(e.target.value)}
+                            required
                         />
                         <input
                             type="password"
                             placeholder='Password'
                             value={password}
                             onChange={e => setPassword(e.target.value)}
+                            required
                         />
                     </div>
                     <div className='location'>
@@ -50,6 +51,7 @@ export default function SignUp() {
                             placeholder='ZIP Code'
                             value={location}
                             onChange={handleLocationChange}
+                            required
                         />
                     </div>
                     <button>Signup</button>

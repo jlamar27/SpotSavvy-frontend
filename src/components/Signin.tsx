@@ -24,14 +24,16 @@ export default function Signin() {
                 placeholder='Username'
                 value={username}
                 onChange={e => setUsername(e.target.value)}
+                required
                 />
                 <input
                 type="password"
                 placeholder='Password'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
+                required
                 />
-                <button className='signin-button'>Signin</button>
+                <button type='submit' className='signin-button'>Signin</button>
 
             </form>
             <span></span>
