@@ -1,35 +1,37 @@
-import React, {useEffect, useState} from 'react'
-import api from '../http/httpConfig'
-import { url } from 'inspector'
-import { request } from 'http'
+import React, { useEffect, useState } from 'react';
+import api from '../http/httpConfig';
 
-interface ResultData {
-  term: string
-  location: string
 
+
+interface Business {
+    id: string;
+    name: string;
 }
 
-
-export default function ResultsPage() {
-  const [results, setResults] = useState<ResultData | null>(null)
-  console.log('here', results)
-
-  useEffect(() => {
-    async function getResults(): Promise<any> {
-      try {
-        const response = await api.get(`/businesses/search?location=New%20York&term=burgers&sort_by=best_match`)
-        setResults(response.data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    getResults()
-  }, [])
-
-
-
-
-  return (
-    <div>ResultsPage</div>
-  )
+interface ResultsPageProps {
+    term: string;
+    location: string;
+    data:[];
 }
+
+const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
+    const [results, setResults] = useState<Business[]>([]);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+    }, [data]);
+
+    return (
+        <div>
+            <h1>Search Results</h1>
+            {data.map((business: Business) => (
+                <div key={business.id}>
+                    <h2>{business.name}</h2>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default ResultsPage;
+export type { Business } 
