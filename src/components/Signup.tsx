@@ -1,35 +1,38 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { postData } from '../api/api'
-import { useAuth } from '../context/authContext'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from './../api/apiConfig';
 
 export default function SignUp() {
-    const [username, setUsername] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [location, setLocation] = useState<number>(0)
-    const { login } = useAuth()
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [location, setLocation] = useState<string>('');
 
-   
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await postData('/path/to/signup/api', { username, password, location });
-            if (response.ok) {
-                // here you can decide to log the user in directly
-                // or redirect them to the login page
+            // Make a POST request using axios instance
+            console.log(username, password, location)
+            console.log(typeof username, typeof password, typeof location)
+            const response = await api.post('/signup/', {
+                username,
+                password,
+                location: location.toString() // Convert number to string
+            });
+            if (response.status === 201) {
                 console.log('User registered successfully');
             } else {
                 console.log('Registration failed');
             }
         } catch (err) {
+            console.log('Error: failed')
             console.error(err);
         }
     }
 
     const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = parseInt(e.target.value, 10)
-        setLocation(newValue)
-        console.log(location)
+        const newValue = e.target.value;
+        setLocation(newValue);
+        console.log(location);
     }
 
     return (
@@ -55,10 +58,11 @@ export default function SignUp() {
                     </div>
                     <div className='location'>
                         <input
-                            type="number"
+                            type="text"
                             placeholder='ZIP Code'
                             value={location}
                             onChange={handleLocationChange}
+                            pattern="\d*" // Ensure only digits can be entered
                             required
                         />
                     </div>
@@ -70,5 +74,5 @@ export default function SignUp() {
                 </span>
             </div>
         </div>
-    )
+    );
 }
