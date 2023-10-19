@@ -1,37 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import api from '../http/httpConfig';
-
-
 
 interface Business {
     id: string;
     name: string;
+    image_url: string;
+    rating: number;
+    review_count: number;
 }
 
 interface ResultsPageProps {
     term: string;
     location: string;
-    data:[];
+    data: Business[];
 }
 
 const ResultsPage: React.FC<ResultsPageProps> = ({ data }) => {
-    const [results, setResults] = useState<Business[]>([]);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-    }, [data]);
-
     return (
         <div>
             <h1>Search Results</h1>
-            {data.map((business: Business) => (
-                <div key={business.id}>
-                    <h2>{business.name}</h2>
-                </div>
-            ))}
+            <div className="business-cards">
+                {data.map((business: Business) => (
+                    <div key={business.id} className="business-card">
+                        <div className="business-image">
+                            <img src={business.image_url} alt={business.name} />
+                        </div>
+                        <div className="business-details">
+                            <h2 className="business-name">{business.name}</h2>
+                            <p>Rating: {business.rating}</p>
+                            <p>Review Count: {business.review_count}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
 export default ResultsPage;
-export type { Business } 
+export type { Business };

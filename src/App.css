@@ -37,5 +37,11 @@
   }
 }
 
+body {
+  background-color: #11416d;
+  color: #bf9b30
+}
+
 @import url("./styles/searchbar.css");
 @import url("./styles/navbar.css");
+@import url("./styles/resultsPage.css");
