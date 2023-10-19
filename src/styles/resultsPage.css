@@ -6,11 +6,12 @@
 
 .business-card {
     display: flex;
-    border: 1px solid #ccc;
+    border: 1px solid #1e2749;
     padding: 20px;
     width: 400px;
     margin-bottom: 20px;
     border-radius: 4px;
+    background-color: #273469;
 }
 
 .business-image {
