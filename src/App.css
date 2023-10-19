@@ -38,8 +38,8 @@
 }
 
 body {
-  background-color: #11416d;
-  color: #bf9b30
+  background-color: white;
+  color: #e4d9ff
 }
 
 @import url("./styles/searchbar.css");
