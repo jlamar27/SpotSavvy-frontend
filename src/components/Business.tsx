@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../http/httpConfig'
 import { error } from 'console';
+
 
 interface BusinessData {
   name: string;
@@ -10,35 +11,33 @@ interface BusinessData {
 
 
 
-interface BusinessProps {
-  bizId : string
-}
-
-const Business: React.FC<BusinessProps> = ({ bizId }) => {
+const Business: React.FC = () => {
   const [business, setBusiness] = useState<BusinessData | null>(null)
-  // id should be passed in from results page
-  // const bizId = ''
+  const { id } = useParams()
   const navigate = useNavigate();
   const [review, setReview] = useState('')
   const [rating, setRating] = useState('')
   const [image, setImage] = useState<File | null>(null)
 
-
+  useEffect(() => {
+    if (business) {
+      console.log(business)
+    }
+  }, [business])
 
 
   useEffect(() => {
     async function getBusiness(): Promise<any> {
       try {
         // remove the additional /
-        const yelpResponse = await api.get(`//businesses/${bizId}`)
+        const yelpResponse = await api.get(`/businesses/${id}`)
         setBusiness(yelpResponse.data)
-        console.log('business obj', business)
       } catch (error) {
         console.error(error)
       }
     }
     getBusiness()
-  }, [])
+  }, [id])
 
 
   async function handleReviewSubmit(e: React.FormEvent) {
@@ -50,24 +49,24 @@ const Business: React.FC<BusinessProps> = ({ bizId }) => {
       }
       reviewData.append('review', review);
       reviewData.append('rating', rating);
-      reviewData.append('id', bizId)
+      reviewData.append('id', id ?? '')
 
-      const reviewObject : {[key: string]: any} = {}
-      reviewData.forEach((value,key) => {
+      const reviewObject: { [key: string]: any } = {}
+      reviewData.forEach((value, key) => {
         reviewObject[key] = value
 
-      console.log(reviewObject)
-      const newReviewId = 1
-      navigate(`/reviews/${newReviewId}`)
+        console.log(reviewObject)
+        const newReviewId = 1
+        navigate(`/reviews/${newReviewId}`)
       });
-      
+
       // const response = await backendapi.post(`endpoint to create a review`, reviewObject);
 
       // if(response.status === 201 && response.data.review_id) {
       //    const newReviewId = response.data.review_id;
-            // navigate(`/reviews/${newReviewId}`
+      // navigate(`/reviews/${newReviewId}`
 
-    }catch (err) {
+    } catch (err) {
       // console.error(error)
     }
 
@@ -76,13 +75,13 @@ const Business: React.FC<BusinessProps> = ({ bizId }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
 
-    if (files && files.length > 0){
+    if (files && files.length > 0) {
       const selectedImage = files[0]
       setImage(selectedImage)
     }
   }
 
-  
+
 
   return (
     <div>
@@ -90,25 +89,25 @@ const Business: React.FC<BusinessProps> = ({ bizId }) => {
       <img src={business?.image_url} alt={business?.name} />
 
       <div className='review-container'>
-      <form onSubmit={handleReviewSubmit} >
-        <label htmlFor="review">Leave a review</label>
-        <textarea name="review" id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
-        <label htmlFor="imageInput">Attach A Photo</label>
-        <input type="file" id='imageInput' name='image' accept='image/*' onChange={handleImageChange} />
-        <label htmlFor="rating">Select Rating:</label>
-        <select 
-        name="rating" 
-        id="rating"
-        onChange={(e) => setRating(e.target.value)}
-        >
-        {[1,2,3,4,5].map((value) => (
-          <option key={value} value={value}>
-            {value}
-          </option>
-        ))}
-        </select>
-        <button>Post Review</button>
-      </form>
+        <form onSubmit={handleReviewSubmit} >
+          <label htmlFor="review">Leave a review</label>
+          <textarea name="review" id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
+          <label htmlFor="imageInput">Attach A Photo</label>
+          <input type="file" id='imageInput' name='image' accept='image/*' onChange={handleImageChange} />
+          <label htmlFor="rating">Select Rating:</label>
+          <select
+            name="rating"
+            id="rating"
+            onChange={(e) => setRating(e.target.value)}
+          >
+            {[1, 2, 3, 4, 5].map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+          <button>Post Review</button>
+        </form>
         // to save as favorites
         <button >Save</button>
       </div>
