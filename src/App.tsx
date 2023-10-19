@@ -28,9 +28,9 @@ function App() {
           path="/results"
           element={
             <ResultsPage
-              term={''}
-              location={''}
-              data={[]}
+              // term={''}
+              // location={''}
+              // data={[]}
             />
           }
         />

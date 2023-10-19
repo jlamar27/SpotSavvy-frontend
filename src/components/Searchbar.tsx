@@ -21,8 +21,8 @@ const SearchBar: React.FC =() => {
       const response = await api.get(`/businesses/search?location=${location}&term=${term}&sort_by=best_match`)
         setData(response.data.businesses)
         console.log(data)
-      navigate('/results');
-    } catch (error) {
+        navigate('/results', { state: { data: response.data.businesses, term: term, location: location } });
+      } catch (error) {
       console.error('Error during search:', error);
     }
   };
@@ -44,7 +44,7 @@ const SearchBar: React.FC =() => {
         />
         <button type="submit">Search</button>
       </form>
-      <ResultsPage term={term} location={location} data={data} />
+      {/* <ResultsPage term={term} location={location} data={data} /> */}
     </div>
   );
 };
