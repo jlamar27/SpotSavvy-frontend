@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Make sure 'react-router-dom' is version 6.x.x or above
-import { postData } from '../api/api';
 import { useAuth } from '../context/authContext';
+import api from '../api/apiConfig'; // Adjust the import path if necessary
 
 export default function Signin() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const { login } = useAuth(); // This hook is for authentication
 
-    const navigate = useNavigate(); // This hook is for navigation
+    const navigate = useNavigate();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await postData('/path/to/login/api', { username, password });
-            if (response.ok) {
-                const data = await response.json();
+            const response = await api.post('/login/', { username, password });
+    
+            if (response.status === 200) {
+                console.log('Authenticated successfully');
+                const data = response.data;
                 login(data.token);
             } else {
                 console.log('Failed to authenticate');
             }
         } catch (err) {
-            console.error(err);
+            console.error('An error occurred while trying to authenticate:', err);
         }
-    }
-
+    }    
 
     const handleSignupLink = () => {
         navigate('/auth/signup');
