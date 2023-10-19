@@ -7,39 +7,36 @@ interface Business {
     image_url: string;
     rating: number;
     review_count: number;
-    location: Location; // This refers to your custom 'Location' interface, not 'useLocation'
+    location: Location;
 }
-
 
 interface Location {
-    display_address: string[]; // Assuming 'display_address' is an array of strings
+    display_address: string[];
 }
 
-// You no longer need 'ResultsPageProps' because you're not receiving these as props anymore
-
-const ResultsPage: React.FC = () => { // Removed '<ResultsPageProps>' because it's no longer needed
-    const location = useLocation(); // This should be a function call
+const ResultsPage: React.FC = () => {
+    const location = useLocation();
     const navigate = useNavigate();
 
-    // These details are now coming from the location state, not props
     const stateData = location.state?.data || [];
     const term = location.state?.term || '';
     const locationSearch = location.state?.location || '';
 
     const handleBusinessClick = (businessId: string) => {
-        navigate(`/business/${businessId}`); 
+        navigate(`/business/${businessId}`);
     };
 
     return (
         <div>
             <h1>Search Results</h1>
-            {/* ... rest of your component */}
             <div className="business-cards">
-                {stateData.map((business: Business) => ( // Using 'stateData' instead of 'data'
-                    <div key={business.id}
-                         className="business-card"
-                         onClick={()=> handleBusinessClick(business.id)}
-                         style={{ cursor: 'pointer'}}>
+                {stateData.map((business: Business) => (
+                    <div
+                        key={business.id}
+                        className="business-card"
+                        onClick={() => handleBusinessClick(business.id)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <div className="business-image">
                             <img src={business.image_url} alt={business.name} />
                         </div>
@@ -49,7 +46,7 @@ const ResultsPage: React.FC = () => { // Removed '<ResultsPageProps>' because it
                             <p>Review Count: {business.review_count}</p>
                             <p>Address: {business.location.display_address.join(', ')}</p>
                         </div>
-                    </button>
+                    </div>
                 ))}
             </div>
         </div>
@@ -57,4 +54,4 @@ const ResultsPage: React.FC = () => { // Removed '<ResultsPageProps>' because it
 };
 
 export default ResultsPage;
-export type { Business }
+export type { Business };

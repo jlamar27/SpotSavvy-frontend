@@ -21,17 +21,13 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/reviews/:reviewId" element={<Review />} />
-          <Route path='/biz/:id' element={<Business />} />
+          <Route path='/business/:id' element={<Business />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/signin" element={<Signin />} />
           <Route
             path="/results"
             element={
-              <ResultsPage
-                term={''}
-                location={''}
-                data={[]}
-              />
+              <ResultsPage />
             }
           />
         </Routes>
