@@ -14,16 +14,19 @@ type Business = {
 };
 
 function App() {
+  const [bizId, setBizId] = useState('')
+
+
 
   return (
     <div className="App">
       <Navbar />
       <Routes>
         <Route></Route>
-        <Route path="/reviews/:reviewId" element={<Review />} />
-        <Route path='/biz/:id' element={<Business />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/signin" element={<Signin />} />
+        <Route path='/biz/:id' element={<Business bizId={bizId} />} />
+        <Route path="/reviews/:reviewId" element={<Review />} />
         <Route
           path="/results"
           element={
@@ -31,6 +34,7 @@ function App() {
               term={''}
               location={''}
               data={[]}
+              setBizId={(newBizId: string) => setBizId(newBizId)}
             />
           }
         />

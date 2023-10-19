@@ -14,8 +14,6 @@ const SearchBar: React.FC =() => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Term:', term);
-    console.log('Location:', location);
     
     try {
       const response = await api.get(`/businesses/search?location=${location}&term=${term}&sort_by=best_match`)
