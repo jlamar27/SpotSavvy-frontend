@@ -10,6 +10,7 @@ interface Business {
     location: Location; // This refers to your custom 'Location' interface, not 'useLocation'
 }
 
+
 interface Location {
     display_address: string[]; // Assuming 'display_address' is an array of strings
 }
@@ -48,7 +49,7 @@ const ResultsPage: React.FC = () => { // Removed '<ResultsPageProps>' because it
                             <p>Review Count: {business.review_count}</p>
                             <p>Address: {business.location.display_address.join(', ')}</p>
                         </div>
-                    </div>
+                    </button>
                 ))}
             </div>
         </div>
@@ -56,4 +57,4 @@ const ResultsPage: React.FC = () => { // Removed '<ResultsPageProps>' because it
 };
 
 export default ResultsPage;
-export type { Business };
+export type { Business }

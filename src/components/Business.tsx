@@ -10,10 +10,14 @@ interface BusinessData {
 
 
 
-function Business() {
+interface BusinessProps {
+  bizId : string
+}
+
+const Business: React.FC<BusinessProps> = ({ bizId }) => {
   const [business, setBusiness] = useState<BusinessData | null>(null)
   // id should be passed in from results page
-  const id = 'gaeJZeZmKalQhcPFjbPrPg'
+  // const bizId = ''
   const navigate = useNavigate();
   const [review, setReview] = useState('')
   const [rating, setRating] = useState('')
@@ -26,7 +30,7 @@ function Business() {
     async function getBusiness(): Promise<any> {
       try {
         // remove the additional /
-        const yelpResponse = await api.get(`//businesses/${id}`)
+        const yelpResponse = await api.get(`//businesses/${bizId}`)
         setBusiness(yelpResponse.data)
         console.log('business obj', business)
       } catch (error) {
@@ -46,7 +50,7 @@ function Business() {
       }
       reviewData.append('review', review);
       reviewData.append('rating', rating);
-      reviewData.append('id', id)
+      reviewData.append('id', bizId)
 
       const reviewObject : {[key: string]: any} = {}
       reviewData.forEach((value,key) => {
@@ -57,7 +61,7 @@ function Business() {
       navigate(`/reviews/${newReviewId}`)
       });
       
-      // const response = await axios.post(`endpoint to create a review`, reviewObject);
+      // const response = await backendapi.post(`endpoint to create a review`, reviewObject);
 
       // if(response.status === 201 && response.data.review_id) {
       //    const newReviewId = response.data.review_id;
