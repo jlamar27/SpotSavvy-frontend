@@ -7,7 +7,8 @@ import Business from './components/Business';
 import ResultsPage from './components/ResultsPage';
 import Signup from './components/Signup';
 import Review from './components/Review';
-import { AuthProvider } from './context/authContext'; // import AuthProvider
+import { AuthProvider } from './context/authContext';
+import GeoLocation from './components/GeoLocation';
 
 type Business = {
   id: string;
@@ -16,9 +17,10 @@ type Business = {
 
 function App() {
   return (
-    <AuthProvider> {/* Start wrapping here */}
+    <AuthProvider>
       <div className="App">
         <Navbar />
+        <GeoLocation/>
         <Routes>
           <Route path="/reviews/:reviewId" element={<Review />} />
           <Route path='/business/:id' element={<Business />} />
