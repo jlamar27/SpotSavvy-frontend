@@ -1,18 +1,29 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { postData } from '../api/api'
+import { useAuth } from '../context/authContext'
 
 export default function SignUp() {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [location, setLocation] = useState<number>(0)
+    const { login } = useAuth()
 
+   
     async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault()
+        e.preventDefault();
         try {
-            const response = {username, password, location}
-            console.log(response)
+            const response = await postData('/path/to/signup/api', { username, password, location });
+            if (response.ok) {
+                // here you can decide to log the user in directly
+                // or redirect them to the login page
+                console.log('User registered successfully');
+            } else {
+                console.log('Registration failed');
+            }
         } catch (err) {
-      }
+            console.error(err);
+        }
     }
 
     const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
