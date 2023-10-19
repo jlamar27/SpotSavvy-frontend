@@ -5,9 +5,6 @@ import {Business} from './ResultsPage'
 import api from '../http/httpConfig';
 
 
-
-
-
 const SearchBar: React.FC =() => {
   const [data, setData] = useState<[]>([]);
   const [term, setTerm] = useState<string>('');
@@ -28,11 +25,6 @@ const SearchBar: React.FC =() => {
     } catch (error) {
       console.error('Error during search:', error);
     }
-  };
-
-  const handleSearch = (term: string, location: string) => {
-    console.log(`Searching for ${term} in ${location}`);
-    // Make your API requests here
   };
 
   return (

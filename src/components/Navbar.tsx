@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import Searchbar from './Searchbar';
 import { Business } from './ResultsPage'
 
-
-
 const Navbar: React.FC = () => {
   return (
     <nav className="navbar">

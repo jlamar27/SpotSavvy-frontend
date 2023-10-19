@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-// import { signup } from '../api/auth'
 
 export default function SignUp() {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [location, setLocation] = useState<number>(0)
-
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -14,8 +12,7 @@ export default function SignUp() {
             const response = {username, password, location}
             console.log(response)
         } catch (err) {
-
-        }
+      }
     }
 
     const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
