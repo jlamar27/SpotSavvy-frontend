@@ -10,7 +10,7 @@ const apiKey = process.env.REACT_APP_YELP_TOKEN;
 // Create a re-useable axios object, with our API as the baseURL
 
 const yelp = axios.create({
-  baseURL: API_URL,
+  baseURL: YELP_API_URL,
 });
 
 // Interceptors are axios functionality, that allows you to intercept requests and responses

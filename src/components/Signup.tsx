@@ -29,11 +29,11 @@ export default function SignUp() {
         }
     }
 
-    const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        setLocation(newValue);
-        console.log(location);
-    }
+    // const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const newValue = e.target.value;
+    //     setLocation(newValue);
+    //     console.log(location);
+    // }
 
     return (
         <div>
@@ -61,7 +61,7 @@ export default function SignUp() {
                             type="text"
                             placeholder='ZIP Code'
                             value={location}
-                            onChange={handleLocationChange}
+                            onChange={e => setLocation(e.target.value)}
                             pattern="\d*" // Ensure only digits can be entered
                             required
                         />
