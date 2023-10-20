@@ -10,7 +10,7 @@ import Review from './components/Review';
 import { getCsrfToken } from './api/apiConfig'; // adjust the import path if necessary
 import { CookiesProvider } from 'react-cookie';
 import GeoLocation from './components/GeoLocation';
-import Carousel from './components/Carousel';
+// import Carousel from './components/Carousel';
 import HomePage from './components/HomePage';
 
 
