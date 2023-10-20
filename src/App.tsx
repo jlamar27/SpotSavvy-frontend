@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -7,7 +7,9 @@ import Business from './components/Business';
 import ResultsPage from './components/ResultsPage';
 import Signup from './components/Signup';
 import Review from './components/Review';
-import { AuthProvider } from './context/authContext'; // import AuthProvider
+import { getCsrfToken } from './api/apiConfig'; // adjust the import path if necessary
+import { CookiesProvider } from 'react-cookie';
+
 
 type Business = {
   id: string;
@@ -15,8 +17,13 @@ type Business = {
 };
 
 function App() {
+  useEffect(() => {
+    // Fetch the CSRF token when the app loads
+    getCsrfToken();
+  }, []);
+
   return (
-    <AuthProvider> {/* Start wrapping here */}
+    <CookiesProvider>
       <div className="App">
         <Navbar />
         <Routes>
@@ -32,7 +39,7 @@ function App() {
           />
         </Routes>
       </div>
-    </AuthProvider>
+    </CookiesProvider>
   );
 }
 
