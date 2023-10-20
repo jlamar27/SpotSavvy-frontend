@@ -3,18 +3,18 @@ import axios from "axios";
 
 
 // Based on environment set api url
-const API_URL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/";
+const YELP_API_URL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/";
 const apiKey = process.env.REACT_APP_YELP_TOKEN;
 
 
 // Create a re-useable axios object, with our API as the baseURL
-const api = axios.create({
-  baseURL: API_URL,
+const yelpApi = axios.create({
+  baseURL: YELP_API_URL,
 });
 
 // Interceptors are axios functionality, that allows you to intercept requests and responses
 // Here we're setting the token in localstorage to the Authorization header
-api.interceptors.request.use((config) => {
+yelpApi.interceptors.request.use((config) => {
   config.headers["Authorization"] = `Bearer ${apiKey}`;
   config.headers["x-requested-with"] = "xmlhttprequest";
   config.headers["Access-Control-Allow-Origin"] = "*";
@@ -22,4 +22,4 @@ api.interceptors.request.use((config) => {
 });
 
 // Export api
-export default api;
+export default yelpApi;
