@@ -23,7 +23,7 @@ function App() {
        <GeoLocation>
         <Routes>
           <Route path="/" element={<HomePage/>}/>
-          <Route path="/reviews/:reviewId" element={<Review />} />
+          <Route path="/:businessId/reviews/:reviewId" element={<Review />} />
           <Route path='/business/:id' element={<Business />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/signin" element={<Signin />} />

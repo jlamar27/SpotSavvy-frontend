@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../http/httpConfig';
+import DeleteReviewModal from './DeleteReviewModal';
 
 export default function Review() {
   const { reviewId } = useParams();
@@ -8,6 +9,7 @@ export default function Review() {
   const [review, setReview] = useState<any>(null);
   const [editedReview, setEditedReview] = useState('');
   const [editedRating, setEditedRating] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     async function fetchReview(): Promise<void> {
@@ -48,8 +50,7 @@ export default function Review() {
     try {
       const response = await api.delete(`/review/delete/${reviewId}`);
       if (response.status === 204) {
-        // add modal on deletion that will informs them that the review has been deleted and then redirects them back to the business page
-        // Review deleted successfully, you can navigate to a different page or display a success message.
+        setModalOpen(true)
       }
     } catch (error) {
       console.error(error);
@@ -91,6 +92,11 @@ export default function Review() {
           <button onClick={deleteReview}>Delete Review</button>
         </div>
       )}
+      <DeleteReviewModal isOpen={isModalOpen} onClose={() => {
+        // Close the modal and navigate back to the business page
+        setModalOpen(false);
+        navigate(`/business/${businessId}`); // Replace with the actual URL
+      }} />
     </div>
   );
 }

@@ -42,7 +42,6 @@ const Business: React.FC = () => {
   const [fetchedReviews, setFetchedReviews] = useState<ReviewData[]>([]);
   const [yelpReviews, setYelpReviews] = useState<YelpReview[] | null>(null);
 
-  console.log(id)
   useEffect(() => {
     async function getBusiness(): Promise<void> {
       try {
@@ -51,7 +50,6 @@ const Business: React.FC = () => {
 
         const yelpReviewResponse = await yelp.get(`/businesses/${id}/reviews`)
         setYelpReviews(yelpReviewResponse.data.reviews)
-        console.log(yelpReviewResponse)
       } catch (error) {
         console.error(error);
       }
@@ -85,13 +83,12 @@ const Business: React.FC = () => {
       if (id) {
         reviewData.restaurant_id = id;
       }
-      console.log(reviewData)
 
+      console.log(id)
       const response = await api.post('review/create/', reviewData);
-      console.log(response)
       if (response.status === 200 && response.data.review_id) {
         const newReviewId = response.data.review_id;
-        navigate(`/reviews/${newReviewId}`);
+        navigate(`/${id}/reviews/${newReviewId}`);
       }
     } catch (error) {
       console.error(error);
