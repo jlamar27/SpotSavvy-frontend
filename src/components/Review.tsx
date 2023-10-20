@@ -4,7 +4,7 @@ import api from '../http/httpConfig';
 import DeleteReviewModal from './DeleteReviewModal';
 
 export default function Review() {
-  const { reviewId } = useParams();
+  const { reviewId, businessId } = useParams();
   const navigate = useNavigate();
   const [review, setReview] = useState<any>(null);
   const [editedReview, setEditedReview] = useState('');

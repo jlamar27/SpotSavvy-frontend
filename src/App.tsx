@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -10,7 +10,7 @@ import Review from './components/Review';
 import { getCsrfToken } from './api/apiConfig'; // adjust the import path if necessary
 import { CookiesProvider } from 'react-cookie';
 import GeoLocation from './components/GeoLocation';
-import Carousel from './components/Carousel';
+// import Carousel from './components/Carousel';
 import HomePage from './components/HomePage';
 
 
