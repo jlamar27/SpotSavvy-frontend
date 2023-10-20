@@ -1,90 +1,108 @@
-import React, { useState, useEffect, useContext, ReactNode } from 'react';
-import { LocationContext } from './LocationContext';
+import React, { useState, useEffect } from 'react';
 import api from '../http/httpConfig';
 
+// Define the type for your business data
 type Business = {
   id: string;
   name: string;
   image_url: string;
 };
 
-const Carousel: React.FC = () => {
-  const [businesses, setBusinesses] = useState<Business[]>([]);
+type CarouselProps = {
+    data: Business[]
+}
+
+const Carousel: React.FC<CarouselProps> = ({data}) => {
+//   const [data, setData] = useState<Business[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [carouselData, setCarouselData] = useState<Business | null>(null);
-
-  const { latitude, longitude } = useContext(LocationContext);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (latitude && longitude) {
+    const fetchData = async () => {
       setIsLoading(true);
+      setError(null);
 
-      const fetchData = async () => {
+      // Fetch geolocation data
+      if (!navigator.geolocation) {
+        setError('Geolocation is not supported by your browser.');
+        setIsLoading(false);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
         try {
-          const result = await fetchBusinesses(latitude, longitude, setCarouselData);
-          setBusinesses(result);
+          // Corrected request with template literals
+          const response = await api.get(`/businesses/search`, {
+            params: {
+              term: 'food',
+              sort_by: 'best_match',
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              limit: 5
+            }
+          });
+
+          if (response.data && response.data.businesses) {
+            // setData(response.data.businesses);
+          } else {
+            setError('No businesses found');
+          }
         } catch (error) {
-          console.error("An error occurred while fetching businesses:", error);
+          // Handle errors from the server
+          setError('An error occurred while fetching data');
         } finally {
           setIsLoading(false);
         }
-      };
+      }, 
+      // Error scenario for geolocation fetching
+      () => {
+        setError('Unable to retrieve your location.');
+        setIsLoading(false);
+      });
+    };
 
-      fetchData();
-    }
-  }, [latitude, longitude]);
+    fetchData();
+  }, []);
 
+  // Interval setup for image change
   useEffect(() => {
-    // Create a timer to switch images every 3 seconds
-    const timer = setInterval(() => {
-      if (businesses.length > 0) {
-        setCurrentImageIndex((prevIndex) =>
-          prevIndex === businesses.length - 1 ? 0 : prevIndex + 1
-        );
-      }
-    }, 3000);
+    if (isLoading || data.length === 0) return;
 
-    // Clear the timer when the component unmounts
-    return () => clearInterval(timer);
-  }, [businesses]);
+    const id = setTimeout(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % data.length);
+    }, 3000); 
 
+    return () => clearTimeout(id);
+  }, [currentImageIndex, data, isLoading]);
+
+  // Rendering logic based on loading state and error handling
   if (isLoading) {
     return <div></div>;
   }
 
-  const currentBusiness = businesses[currentImageIndex];
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="carousel-container">
-      {currentBusiness ? (
-        <div className="carousel-item">
-          <img src={currentBusiness.image_url} alt={currentBusiness.name} />
-          <div className="business-name">{currentBusiness.name}</div>
-        </div>
-      ) : (
-        <p>No businesses found. Try a different location.</p>
-      )}
-    </div>
+    {data.map((business, index) => (
+      <div 
+        key={business.id}
+        className={`carousel-item ${index === currentImageIndex ? 'active' : ''}`}
+      >
+        <img 
+          src={business.image_url} 
+          alt={business.name} 
+          className="carousel-image" 
+        />
+        <div className="carousel-caption">{business.name}</div>
+      </div>
+    ))}
+  </div>
+
   );
 };
-
-async function fetchBusinesses(latitude: number, longitude: number, setCarouselData: any): Promise<Business[]> {
-  try {
-    const response = await api.get(`/businesses/search?term=food&sort_by=best_match&latitude=${latitude}&longitude=${longitude}&limit=5`);
-    const responseData = response.data;
-
-    if (responseData && responseData.businesses) {
-      setCarouselData(responseData.businesses[0]);
-      return responseData.businesses;
-    } else {
-      console.error("No businesses found in the response data.");
-      return [];
-    }
-  } catch (error) {
-    console.error("An error occurred while fetching businesses:", error);
-    return [];
-  }
-}
 
 export default Carousel;

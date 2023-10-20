@@ -8,8 +8,6 @@ export type LocationContextType = {
   setCoordinates: (latitude: number, longitude: number) => void;
 };
 
-// Create a context with default values.
-// These will be overwritten by the Provider value.
 export const LocationContext = React.createContext<LocationContextType>({
   latitude: null,
   longitude: null,
