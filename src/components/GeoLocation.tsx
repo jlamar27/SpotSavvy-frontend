@@ -1,53 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, ReactNode } from 'react';
+import  { LocationContext, LocationContextType } from './LocationContext'; 
 
-type LocationState = {
-    latitude: number | null;
-    longitude: number | null;
-    userAddress: string | null; 
-};
+interface GeoLocationProps {
+    children: ReactNode;
+}
 
-const GeoLocation: React.FC = () => {
-    const [location, setLocation] = useState<LocationState>({
-        latitude: null,
-        longitude: null,
-        userAddress: null,
-    });
-    const [error, setError] = useState<string | null>(null);
+const GeoLocation: React.FC<GeoLocationProps> = ({ children }) => {
+  const [location, setLocation] = useState<Omit<LocationContextType, 'setCoordinates'>>({
+    latitude: null,
+    longitude: null,
+    userAddress: null,
+    error: null,
+  });
 
-    useEffect(() => {
-        if (!navigator.geolocation) {
-            setError('Geolocation is not supported by your browser.');
-        } else {
-            setError(null);
+  // Define the function that updates the coordinates. We use useCallback to avoid its reference changing on every render.
+  const setCoordinates = useCallback((latitude: number, longitude: number) => {
+    setLocation((prev) => ({
+      ...prev,
+      latitude,
+      longitude,
+    }));
+  }, []); // No dependencies, so this function reference never changes.
 
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setLocation({
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        userAddress: null, 
-                    });
-                    // Here you could add a call to another function that translates the latitude and longitude into a human-readable address, if needed.
-                },
-                () => {
-                    setError('Unable to retrieve your location.');
-                }
-            );
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setLocation((prevState) => ({
+        ...prevState,
+        error: 'Geolocation is not supported by your browser.',
+      }));
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCoordinates(latitude, longitude);
+        },
+        () => {
+          setLocation((prevState) => ({
+            ...prevState,
+            error: 'Unable to retrieve your location.',
+          }));
         }
-    }, []); 
+      );
+    }
+  }, [setCoordinates]); // Dependency on setCoordinates since we're using it in this effect.
 
-    return (
-        <div>
-            <h2>User Location:</h2>
-            {error && <p>{error}</p>}
-            <ul>
-                <li>Latitude: {location.latitude}</li>
-                <li>Longitude: {location.longitude}</li>
-                {/* Display the address, if available */}
-                {/* <li>Address: {location.userAddress}</li> */}
-            </ul>
-        </div>
-    );
+  // Including 'setCoordinates' in the value provided to the Provider, as it's part of the context value expected by consumers.
+  const contextValue = {
+    ...location,
+    setCoordinates,
+  };
+
+  return (
+    <LocationContext.Provider value={contextValue}>
+      {children}
+    </LocationContext.Provider>
+  );
 };
 
 export default GeoLocation;
