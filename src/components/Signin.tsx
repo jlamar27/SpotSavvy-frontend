@@ -16,9 +16,9 @@ export default function Signin() {
             const response = await api.post('/login/', { username, password });
     
             if (response.status === 200) {
-                console.log('Authenticated successfully');
-                const data = response.data;
-                login(data.token);
+                console.log('Backend response:', response.data);
+                console.log('CSRF Token:', response.data.csrf_token)
+                login(response.data.csrf_token);
             } else {
                 console.log('Failed to authenticate');
             }

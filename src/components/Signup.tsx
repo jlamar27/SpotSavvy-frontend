@@ -19,7 +19,7 @@ export default function SignUp() {
                 location: location.toString() // Convert number to string
             });
             if (response.status === 201) {
-                console.log('User registered successfully');
+                console.log('Backend response:', response.data);
             } else {
                 console.log('Registration failed');
             }
