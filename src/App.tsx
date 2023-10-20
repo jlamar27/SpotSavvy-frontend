@@ -9,12 +9,10 @@ import Signup from './components/Signup';
 import Review from './components/Review';
 import { getCsrfToken } from './api/apiConfig'; // adjust the import path if necessary
 import { CookiesProvider } from 'react-cookie';
+import GeoLocation from './components/GeoLocation';
+import Carousel from './components/Carousel';
+import HomePage from './components/HomePage';
 
-
-type Business = {
-  id: string;
-  name: string;
-};
 
 function App() {
   useEffect(() => {
@@ -26,18 +24,17 @@ function App() {
     <CookiesProvider>
       <div className="App">
         <Navbar />
+         
+       <GeoLocation>
         <Routes>
+          <Route path="/" element={<HomePage/>}/>
           <Route path="/reviews/:reviewId" element={<Review />} />
           <Route path='/business/:id' element={<Business />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/signin" element={<Signin />} />
-          <Route
-            path="/results"
-            element={
-              <ResultsPage />
-            }
-          />
+          <Route path="/results" element={<ResultsPage />} />
         </Routes>
+      </GeoLocation>
       </div>
     </CookiesProvider>
   );

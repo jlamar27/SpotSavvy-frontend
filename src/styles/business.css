@@ -1,0 +1,66 @@
+.business-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px;
+  }
+  
+  .left-column {
+    flex: 70%;
+  }
+  
+  .right-column {
+    flex: 30%;
+  }
+  
+  .fetched-reviews {
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  .yelp-reviews {
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    margin-top: 60px;
+  }
+  
+  .review-container {
+    background-color: #f7f7f7;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+  }
+  
+  /* Style other elements as needed */
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 16px;
+  }
+  
+  img {
+    max-width: 100%;
+  }
+  
+  textarea,
+  select,
+  button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+  }
+  
+  /* Add more styles as needed */
+  
+  

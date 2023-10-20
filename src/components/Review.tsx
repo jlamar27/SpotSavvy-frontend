@@ -1,42 +1,96 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import api from '../http/httpConfig';
 
 export default function Review() {
-  const [review, setReview] = useState('')
-  const [rating, setRating] = useState('')
-  const [image, setImage] = useState<File | null>(null)
+  const { reviewId } = useParams();
+  const navigate = useNavigate();
+  const [review, setReview] = useState<any>(null);
+  const [editedReview, setEditedReview] = useState('');
+  const [editedRating, setEditedRating] = useState('');
 
-  async function handleReviewSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    try{
-      console.log('review', review, 'image: ', image)
-    }catch (err) {
+  useEffect(() => {
+    async function fetchReview(): Promise<void> {
+      try {
+        const response = await api.get(`/reviews/${reviewId}`);
+        setReview(response.data);
 
+        // Populate the edit fields with the existing review data
+        setEditedReview(response.data.review);
+        setEditedRating(response.data.rating);
+      } catch (error) {
+        console.error(error);
+      }
     }
+    fetchReview();
+  }, [reviewId]);
 
+  // Handle editing the review
+  async function handleEditReview(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      const editedReviewData = {
+        id: reviewId,
+        review: editedReview,
+        rating: editedRating,
+      };
+
+      const response = await api.put(`/reviews/${reviewId}`, editedReviewData);
+      if (response.status === 200) {
+        // inform user that their edit has gone through and redirect back to business page figure out how were goning to get businessid
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-
-    if (files && files.length > 0){
-      const selectedImage = files[0]
-      setImage(selectedImage)
+  async function deleteReview() {
+    try {
+      const response = await api.delete(`/review/delete/${reviewId}`);
+      if (response.status === 204) {
+        // add modal on deletion that will informs them that the review has been deleted and then redirects them back to the business page
+        // Review deleted successfully, you can navigate to a different page or display a success message.
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
-  
 
   return (
     <div>
-      <h1>business.name</h1>
-      <form onSubmit={handleReviewSubmit} >
-        <label htmlFor="review">Leave a review</label>
-        <textarea name="review" id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
-        <label htmlFor="imageInput">Attach A Photo</label>
-        <input type="file" id='imageInput' name='image' accept='image/*' onChange={handleImageChange} />
-        <button>Post Review</button>
+      <h1>Edit Review</h1>
+      <form onSubmit={handleEditReview}>
+        <label htmlFor="editedReview">Edit your review</label>
+        <textarea
+          name="editedReview"
+          id="editedReview"
+          value={editedReview}
+          onChange={(e) => setEditedReview(e.target.value)}
+        ></textarea>
+        <label htmlFor="editedRating">Edit Rating:</label>
+        <select
+          name="editedRating"
+          id="editedRating"
+          value={editedRating}
+          onChange={(e) => setEditedRating(e.target.value)}
+        >
+          {[1, 2, 3, 4, 5].map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </select>
+        <button type="submit">Save Changes</button>
       </form>
-
+      {review && (
+        <div>
+          <h3>Rating: {review.rating}</h3>
+          <p>Text: {review.text}</p>
+          <p>Written by: {review.user.username}</p>
+          <p>Date: {review.date}</p>
+          <button onClick={deleteReview}>Delete Review</button>
+        </div>
+      )}
     </div>
-  )
+  );
 }

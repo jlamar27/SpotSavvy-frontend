@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../http/httpConfig'
 import { error } from 'console';
+import api from '../api/apiConfig';
+import yelp from '../http/httpConfig';
 
 
 interface BusinessData {
@@ -9,110 +10,152 @@ interface BusinessData {
   image_url: string
 }
 
+interface ReviewData {
+  id: string;
+  review: string;
+  restaurant_id: string;
+  user: {
+    id: string;
+    username: string;
+  };
+  rating: number;
+  text: string;
+  date: string; // You can use the appropriate date format (string) used in your Django model
+}
+
+interface YelpReview {
+  text: string;
+  rating: number;
+  time_created: string;
+  user: {
+    name: string;
+  };
+}
 
 
 const Business: React.FC = () => {
-  const [business, setBusiness] = useState<BusinessData | null>(null)
-  const { id } = useParams()
+  const [business, setBusiness] = useState<BusinessData | null>(null);
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [review, setReview] = useState('')
-  const [rating, setRating] = useState('')
-  const [image, setImage] = useState<File | null>(null)
+  const [newReview, setNewReview] = useState('');
+  const [rating, setRating] = useState('');
+  const [fetchedReviews, setFetchedReviews] = useState<ReviewData[]>([]);
+  const [yelpReviews, setYelpReviews] = useState<YelpReview[] | null>(null);
 
+  console.log(id)
   useEffect(() => {
-    if (business) {
-      console.log(business)
-    }
-  }, [business])
-
-
-  useEffect(() => {
-    async function getBusiness(): Promise<any> {
+    async function getBusiness(): Promise<void> {
       try {
-        // remove the additional /
-        const yelpResponse = await api.get(`/businesses/${id}`)
-        setBusiness(yelpResponse.data)
+        const yelpResponse = await yelp.get(`/businesses/${id}`);
+        setBusiness(yelpResponse.data);
+
+        const yelpReviewResponse = await yelp.get(`/businesses/${id}/reviews`)
+        setYelpReviews(yelpReviewResponse.data.reviews)
+        console.log(yelpReviewResponse)
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
-    getBusiness()
-  }, [id])
+    getBusiness();
+  }, [id]);
 
+  // Fetch reviews for the business
+  useEffect(() => {
+    async function fetchReviews(): Promise<void> {
+      try {
+        const response = await api.get(`/reviews/${id}`);
+        setFetchedReviews(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchReviews();
+  }, [id]);
 
   async function handleReviewSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const reviewData = new FormData();
-      if (image) {
-        reviewData.append('image', image);
+      const reviewData = {
+        restaurant_id: '',
+        rating: '',
+        text: ''
+      };
+      reviewData.text = newReview;
+      reviewData.rating = rating
+      if (id) {
+        reviewData.restaurant_id = id;
       }
-      reviewData.append('review', review);
-      reviewData.append('rating', rating);
-      reviewData.append('id', id ?? '')
+      console.log(reviewData)
 
-      const reviewObject: { [key: string]: any } = {}
-      reviewData.forEach((value, key) => {
-        reviewObject[key] = value
-
-        console.log(reviewObject)
-        const newReviewId = 1
-        navigate(`/reviews/${newReviewId}`)
-      });
-
-      // const response = await backendapi.post(`endpoint to create a review`, reviewObject);
-
-      // if(response.status === 201 && response.data.review_id) {
-      //    const newReviewId = response.data.review_id;
-      // navigate(`/reviews/${newReviewId}`
-
-    } catch (err) {
-      // console.error(error)
-    }
-
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-
-    if (files && files.length > 0) {
-      const selectedImage = files[0]
-      setImage(selectedImage)
+      const response = await api.post('review/create/', reviewData);
+      console.log(response)
+      if (response.status === 200 && response.data.review_id) {
+        const newReviewId = response.data.review_id;
+        navigate(`/reviews/${newReviewId}`);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
 
 
   return (
-    <div>
-      <h1>{business?.name}</h1>
-      <img src={business?.image_url} alt={business?.name} />
+    <div className="business-container">
+      <div className="left-column">
+        <h1>{business?.name}</h1>
+        <img src={business?.image_url} alt={business?.name} />
+        <div className="fetched-reviews">
+          <h2>Reviews for {business?.name}</h2>
+          {fetchedReviews.map((review) => (
+            <div key={review.id}>
+              <h3>Rating: {review.rating}</h3>
+              <p>Text: {review.text}</p>
+              <p>Written by: {review.user.username}</p>
+              <p>Date: {review.date}</p>
+            </div>
+          ))}
 
-      <div className='review-container'>
-        <form onSubmit={handleReviewSubmit} >
-          <label htmlFor="review">Leave a review</label>
-          <textarea name="review" id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
-          <label htmlFor="imageInput">Attach A Photo</label>
-          <input type="file" id='imageInput' name='image' accept='image/*' onChange={handleImageChange} />
-          <label htmlFor="rating">Select Rating:</label>
-          <select
-            name="rating"
-            id="rating"
-            onChange={(e) => setRating(e.target.value)}
-          >
-            {[1, 2, 3, 4, 5].map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-          <button>Post Review</button>
-        </form>
-        // to save as favorites
-        <button >Save</button>
+          <div className="review-container">
+            <form onSubmit={handleReviewSubmit}>
+              <label htmlFor="review">Leave a review</label>
+              <textarea name="review" id="review" value={newReview} onChange={(e) => setNewReview(e.target.value)}></textarea>
+              <label htmlFor="rating">Select Rating:</label>
+              <select
+                name="rating"
+                id="rating"
+                onChange={(e) => setRating(e.target.value)}
+              >
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+              <button type="submit">Post Review</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className="right-column">
+        <div className="yelp-reviews">
+          <h2>Yelp Reviews for {business?.name}</h2>
+          {yelpReviews && yelpReviews.length > 0 ? (
+            yelpReviews.map((yelpReview, index) => (
+              <div key={index}>
+                <h3>Yelp Rating: {yelpReview.rating}</h3>
+                <p>Yelp Text: {yelpReview.text}</p>
+                <p>Review by: {yelpReview.user.name}</p>
+                <p>Review Date: {yelpReview.time_created}</p>
+              </div>
+            ))
+          ) : (
+            <p>No Yelp reviews available.</p>
+          )}
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Business
+export default Business;
