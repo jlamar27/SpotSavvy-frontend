@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../http/httpConfig'
 import { error } from 'console';
+import yelpApi from '../http/httpConfig';
+import api from '../api/apiConfig';
 
 
 interface BusinessData {
@@ -9,91 +10,128 @@ interface BusinessData {
   image_url: string
 }
 
-
+interface ReviewData {
+  id: string;
+  review: string;
+  restaurant_id: string;
+  user: {
+    id: string;
+    username: string;
+  };
+  rating: number;
+  text: string;
+  date: string; // You can use the appropriate date format (string) used in your Django model
+}
 
 const Business: React.FC = () => {
-  const [business, setBusiness] = useState<BusinessData | null>(null)
-  const { id } = useParams()
+  const [business, setBusiness] = useState<BusinessData | null>(null);
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [review, setReview] = useState('')
-  const [rating, setRating] = useState('')
-  const [image, setImage] = useState<File | null>(null)
+  const [newReview, setNewReview] = useState('');
+  const [rating, setRating] = useState('');
+  const [fetchedReviews, setFetchedReviews] = useState<ReviewData[]>([]);
 
+  // useEffect(() => {
+  //   async function getBusiness(): Promise<void> {
+  //     try {
+  //       const yelpResponse = await yelpApi.get(`/businesses/${id}`);
+  //       setBusiness(yelpResponse.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  //   getBusiness();
+  // }, [id]);
+
+  // Fetch reviews for the business
   useEffect(() => {
-    if (business) {
-      console.log(business)
-    }
-  }, [business])
-
-
-  useEffect(() => {
-    async function getBusiness(): Promise<any> {
+    async function fetchReviews(): Promise<void> {
       try {
-        // remove the additional /
-        const yelpResponse = await api.get(`/businesses/${id}`)
-        setBusiness(yelpResponse.data)
+        const response = await api.get(`/reviews/${id}`);
+        setFetchedReviews(response.data);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
-    getBusiness()
-  }, [id])
-
+    fetchReviews();
+  }, [id]);
 
   async function handleReviewSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const reviewData = new FormData();
-      if (image) {
-        reviewData.append('image', image);
+      const reviewData = {
+        review: '',
+        rating: '',
+        restaurant_id:''
+      };
+      // if (image) {
+      //   reviewData.append('image', image);
+      // }
+      console.log('newReview:', newReview);
+      console.log('rating:', rating);
+      console.log('id:', id);
+
+      reviewData.review = newReview;
+      reviewData.rating= rating;
+
+      if (id) {
+        reviewData.restaurant_id = id;
+      } else {
+        // Handle the case where id is undefined (if needed)
       }
-      reviewData.append('review', review);
-      reviewData.append('rating', rating);
-      reviewData.append('id', id ?? '')
+      
 
-      const reviewObject: { [key: string]: any } = {}
-      reviewData.forEach((value, key) => {
-        reviewObject[key] = value
+      // reviewData.restaurant_id= id;
 
-        console.log(reviewObject)
-        const newReviewId = 1
-        navigate(`/reviews/${newReviewId}`)
-      });
 
-      // const response = await backendapi.post(`endpoint to create a review`, reviewObject);
+      console.log(reviewData)
 
-      // if(response.status === 201 && response.data.review_id) {
-      //    const newReviewId = response.data.review_id;
-      // navigate(`/reviews/${newReviewId}`
+      // const response = await api.post('review/create/', reviewData);
+      // console.log(response)
+      // Create a dummy response 
+      const dummyResponse = {
+        status: 200,
+        data: {
+          review_id: '123'
+        },
+      }
 
-    } catch (err) {
-      // console.error(error)
-    }
+      if (dummyResponse.status === 200 && dummyResponse.data.review_id) {
+        console.log('hi')
+        const newReviewId = dummyResponse.data.review_id;
+        navigate(`/reviews/${newReviewId}`);
+      }
 
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-
-    if (files && files.length > 0) {
-      const selectedImage = files[0]
-      setImage(selectedImage)
+      // if (response.status === 200 && response.data.review_id) {
+      //   const newReviewId = response.data.review_id;
+      //   navigate(`/reviews/${newReviewId}`);
+      // }
+    } catch (error) {
+      console.error(error);
     }
   }
-
 
 
   return (
     <div>
       <h1>{business?.name}</h1>
       <img src={business?.image_url} alt={business?.name} />
+      <div className="reviews">
+        <h2>Reviews for {business?.name}</h2>
+        {fetchedReviews.map((review) => (
+          <div key={review.id}>
+            <h3>Rating: {review.rating}</h3>
+            <p>Text: {review.text}</p>
+            <p>Written by: {review.user.username}</p>
+            <p>Date: {review.date}</p>
+          </div>
+        ))}
+      </div>
 
-      <div className='review-container'>
-        <form onSubmit={handleReviewSubmit} >
+      <div className="review-container">
+        <form onSubmit={handleReviewSubmit}>
           <label htmlFor="review">Leave a review</label>
-          <textarea name="review" id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
-          <label htmlFor="imageInput">Attach A Photo</label>
-          <input type="file" id='imageInput' name='image' accept='image/*' onChange={handleImageChange} />
+          <textarea name="review" id="review" value={newReview} onChange={(e) => setNewReview(e.target.value)}></textarea>
           <label htmlFor="rating">Select Rating:</label>
           <select
             name="rating"
@@ -106,13 +144,11 @@ const Business: React.FC = () => {
               </option>
             ))}
           </select>
-          <button>Post Review</button>
+          <button type="submit">Post Review</button>
         </form>
-        // to save as favorites
-        <button >Save</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Business
+export default Business;
