@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from './../api/apiConfig';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function SignUp() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [location, setLocation] = useState<string>('');
+    const [made, setMade] = useState<boolean>(false);
+    const navigate = useNavigate()
+
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         try {
-            // Make a POST request using axios instance
             console.log(username, password, location)
             console.log(typeof username, typeof password, typeof location)
             const response = await api.post('/signup/', {
@@ -19,7 +23,11 @@ export default function SignUp() {
                 location: location.toString() // Convert number to string
             });
             if (response.status === 201) {
-                console.log('Backend response:', response.data);
+                console.log('User registered successfully');
+                setMade(true)
+                setTimeout(() => {
+                    navigate('/auth/signin')
+                }, 1200)
             } else {
                 console.log('Registration failed');
             }
@@ -29,16 +37,14 @@ export default function SignUp() {
         }
     }
 
-    // const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const newValue = e.target.value;
-    //     setLocation(newValue);
-    //     console.log(location);
-    // }
 
     return (
         <div>
             <div className='signup-container'>
                 <h1 className='signup-title'>Signup</h1>
+                {made &&
+                    <span>created account!!</span>
+                }
                 <form onSubmit={handleSubmit}>
                     <div className='username-password'>
                         <input

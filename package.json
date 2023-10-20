@@ -16,6 +16,7 @@
     "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.10",
@@ -45,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-modal": "^3.16.2"
   }
 }
