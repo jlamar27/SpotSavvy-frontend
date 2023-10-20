@@ -1,4 +1,3 @@
-// Review.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../http/httpConfig';
@@ -12,9 +11,13 @@ export default function Review() {
 
   useEffect(() => {
     async function fetchReview(): Promise<void> {
-      try { 
+      try {
         const response = await api.get(`/reviews/${reviewId}`);
         setReview(response.data);
+
+        // Populate the edit fields with the existing review data
+        setEditedReview(response.data.review);
+        setEditedRating(response.data.rating);
       } catch (error) {
         console.error(error);
       }
@@ -32,10 +35,21 @@ export default function Review() {
         rating: editedRating,
       };
 
-      console.log(editedReviewData)
       const response = await api.put(`/reviews/${reviewId}`, editedReviewData);
       if (response.status === 200) {
-        // Review updated successfully, you can navigate to the review page or display a success message.
+        // inform user that their edit has gone through and redirect back to business page figure out how were goning to get businessid
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function deleteReview() {
+    try {
+      const response = await api.delete(`/review/delete/${reviewId}`);
+      if (response.status === 204) {
+        // add modal on deletion that will informs them that the review has been deleted and then redirects them back to the business page
+        // Review deleted successfully, you can navigate to a different page or display a success message.
       }
     } catch (error) {
       console.error(error);
@@ -45,21 +59,19 @@ export default function Review() {
   return (
     <div>
       <h1>Edit Review</h1>
-      {review && (
-        <div>
-          <h3>Rating: {review.rating}</h3>
-          <p>Text: {review.text}</p>
-          <p>Written by: {review.user.username}</p>
-          <p>Date: {review.date}</p>
-        </div>
-      )}
       <form onSubmit={handleEditReview}>
         <label htmlFor="editedReview">Edit your review</label>
-        <textarea name="editedReview" id="editedReview" value={editedReview} onChange={(e) => setEditedReview(e.target.value)}></textarea>
+        <textarea
+          name="editedReview"
+          id="editedReview"
+          value={editedReview}
+          onChange={(e) => setEditedReview(e.target.value)}
+        ></textarea>
         <label htmlFor="editedRating">Edit Rating:</label>
         <select
           name="editedRating"
           id="editedRating"
+          value={editedRating}
           onChange={(e) => setEditedRating(e.target.value)}
         >
           {[1, 2, 3, 4, 5].map((value) => (
@@ -70,6 +82,15 @@ export default function Review() {
         </select>
         <button type="submit">Save Changes</button>
       </form>
+      {review && (
+        <div>
+          <h3>Rating: {review.rating}</h3>
+          <p>Text: {review.text}</p>
+          <p>Written by: {review.user.username}</p>
+          <p>Date: {review.date}</p>
+          <button onClick={deleteReview}>Delete Review</button>
+        </div>
+      )}
     </div>
   );
 }
