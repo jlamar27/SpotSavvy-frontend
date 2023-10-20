@@ -1,56 +1,55 @@
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 
-// Helper method to get cookie value
-const getCookie = (name: string): string | null => {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
-    if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-    return null;
+// Function to get the value of a cookie
+export const getCookie = (name: string): string | null => {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return match[2];
+  return null;
 };
 
 // Base API URL configuration
 if (!process.env.REACT_APP_DEPLOYED_API_URL) {
-    throw new Error('Missing REACT_APP_DEPLOYED_API_URL');
+  throw new Error('Missing REACT_APP_DEPLOYED_API_URL');
 }
 const API_URL = process.env.REACT_APP_ENVIRONMENT === "development"
-    ? process.env.REACT_APP_LOCAL_API_URL
-    : process.env.REACT_APP_DEPLOYED_API_URL;
+  ? process.env.REACT_APP_LOCAL_API_URL
+  : process.env.REACT_APP_DEPLOYED_API_URL;
 
-// Create axios instance
+// Create axios instance with base URL and credentials
 const api = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true // Important for sending cookies
+  baseURL: API_URL,
+  withCredentials: true // important to include with every request
 });
 
-// Request interceptor for API calls
-api.interceptors.request.use(
-    async (config) => {
-      // CSRF Token
-      const csrfToken = getCookie('csrftoken');
-      if (csrfToken) {
-        // Set the CSRF token only if headers object exists
-        config.headers = config.headers || {};
-        config.headers['X-CSRFToken'] = csrfToken;
-      } else {
-        throw new Error('CSRF token not found!');
-      }
-  
-      // Auth Token
-      const authToken = localStorage.getItem('authToken');
-      if (authToken) {
-        // Set the Auth token only if headers object exists
-        config.headers = config.headers || {};
-        config.headers['Authorization'] = `Token ${authToken}`;
-      }
-  
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );  
+export const getCsrfToken = async () => {
+  try {
+    // Make a request to the server endpoint that provides the CSRF token.
+    // The server should set a cookie containing the CSRF token in response to this request.
+    await api.get('/get-csrf-token/'); // this should be your server endpoint for initializing a session and getting a CSRF token
+  } catch (error) {
+    console.error('Could not get CSRF token', error);
+  }
+};
+
+// Set the CSRF token for each request
+api.interceptors.request.use(request => {
+  const csrfToken = localStorage.getItem('csrf_token');
+  request.headers['X-CSRFToken'] = csrfToken;
+  return request;
+}, error => {
+  return Promise.reject(error);
+});
+
+// Response interceptor
+api.interceptors.response.use(response => {
+  // Any status code that lies within the range of 2xx will cause this function to trigger
+  return response;
+}, error => {
+  // Any status codes that falls outside the range of 2xx will cause this function to trigger
+  if (error.response && error.response.status === 403) {
+    console.error('CSRF token validation failed:', error.response);
+  }
+  return Promise.reject(error);
+});
 
 export default api;

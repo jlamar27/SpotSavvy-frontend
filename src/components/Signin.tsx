@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Make sure 'react-router-dom' is version 6.x.x or above
-import { useAuth } from '../context/authContext';
-import api from '../api/apiConfig'; // Adjust the import path if necessary
+import api, { getCookie } from '../api/apiConfig'; // Adjust the import path if necessary
 
 export default function Signin() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const { login } = useAuth(); // This hook is for authentication
 
     const navigate = useNavigate();
 
@@ -16,9 +14,10 @@ export default function Signin() {
             const response = await api.post('/login/', { username, password });
     
             if (response.status === 200) {
-                console.log('Authenticated successfully');
-                const data = response.data;
-                login(data.token);
+                console.log('Backend response:', response.data);
+                console.log('CSRF Token on Login:', response.data.csrf_token);
+                localStorage.setItem('csrf_token', response.data.csrf_token);
+                console.log('SessionID:', response.data.sessionid)
             } else {
                 console.log('Failed to authenticate');
             }
