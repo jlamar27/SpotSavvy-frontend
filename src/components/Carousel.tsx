@@ -76,7 +76,6 @@ const Carousel: React.FC<CarouselProps> = ({data}) => {
     return () => clearTimeout(id);
   }, [currentImageIndex, data, isLoading]);
 
-  // Rendering logic based on loading state and error handling
   if (isLoading) {
     return <div></div>;
   }
