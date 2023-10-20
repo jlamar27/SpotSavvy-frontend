@@ -8,13 +8,15 @@ const apiKey = process.env.REACT_APP_YELP_TOKEN;
 
 
 // Create a re-useable axios object, with our API as the baseURL
-const yelpApi = axios.create({
-  baseURL: YELP_API_URL,
+
+const yelp = axios.create({
+  baseURL: API_URL,
 });
 
 // Interceptors are axios functionality, that allows you to intercept requests and responses
 // Here we're setting the token in localstorage to the Authorization header
-yelpApi.interceptors.request.use((config) => {
+
+yelp.interceptors.request.use((config) => {
   config.headers["Authorization"] = `Bearer ${apiKey}`;
   config.headers["x-requested-with"] = "xmlhttprequest";
   config.headers["Access-Control-Allow-Origin"] = "*";
@@ -22,4 +24,6 @@ yelpApi.interceptors.request.use((config) => {
 });
 
 // Export api
-export default yelpApi;
+
+export default yelp;
+
