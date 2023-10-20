@@ -42,9 +42,8 @@ const GeoLocation: React.FC<GeoLocationProps> = ({ children }) => {
         }
       );
     }
-  }, [setCoordinates]); // Dependency on setCoordinates since we're using it in this effect.
+  }, [setCoordinates]); 
 
-  // Including 'setCoordinates' in the value provided to the Provider, as it's part of the context value expected by consumers.
   const contextValue = {
     ...location,
     setCoordinates,

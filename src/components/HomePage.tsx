@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Location } from 'react-router-dom';
-// Import your carousel component here
-// import Carousel from './path-to-your-carousel-component';
+import { useLocation } from 'react-router-dom';
+import Carousel from './Carousel';
+import api from '../http/httpConfig'
 
 type BusinessData = {
-  imageUrl: string;
+  id: string;
+  image_url: string; 
   name: string;
 };
 
@@ -15,9 +15,10 @@ type LocationState = {
 };
 
 const HomePage: React.FC = () => {
-  const [location, setLocation] = useState<LocationState>({ latitude: null, longitude: null });
-  const [data, setData] = useState<BusinessData[]>([]); // This will hold the data fetched from API
+  const [userLocation, setUserLocation] = useState<LocationState>({ latitude: null, longitude: null });
+  const [data, setData] = useState<BusinessData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchLocationAndData = async () => {
@@ -27,24 +28,21 @@ const HomePage: React.FC = () => {
       }
 
       navigator.geolocation.getCurrentPosition(async (position) => {
-        setLocation({
+        setUserLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
 
         try {
-          // Make the API call with the obtained location data
-          const response = await axios.get('<API_ENDPOINT>', {
-            params: {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              term: 'food', // or any other term you want to search for
-              // Include other parameters required by the API
-            },
-          });
+          const response = await api.get(`/businesses/search?term=food&sort_by=best_match&latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&limit=5`);
 
           if (response.data && response.data.businesses) {
-            setData(response.data.businesses);
+            const formattedData = response.data.businesses.map((business: any) => ({
+              id: business.id,
+              image_url: business.image_url, 
+              name: business.name,
+            }));
+            setData(formattedData); 
           } else {
             setError('No data available for your location.');
           }
@@ -62,10 +60,9 @@ const HomePage: React.FC = () => {
   return (
     <div>
       {error && <p>{error}</p>}
-      {data.length > 0 ? (
+      {data.length > 0 && location.pathname === '/' ? (
         <div>
-          {/* Render your Carousel component here */}
-          {/* <Carousel data={data} /> */}
+          <Carousel data={data} />
         </div>
       ) : (
         <p>No data available for your location.</p>
