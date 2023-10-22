@@ -27,9 +27,7 @@ const Navbar: React.FC = () => {
       
       if (response.status === 200) {
         // Redirect to the login or home page after logout
-        // window.location.href = '/auth/signin';
-        console.log("removing cookie")
-        removeCookie('csrftoken');
+        window.location.href = '/auth/signin';
       }
     } catch (error) {
       console.error('Error logging out:', error);
