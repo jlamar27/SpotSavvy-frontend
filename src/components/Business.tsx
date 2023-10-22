@@ -7,8 +7,15 @@ import yelp from '../http/httpConfig';
 
 interface BusinessData {
   name: string;
-  image_url: string
+  image_url: string;
+  phone: string;
+  location: {
+    display_address: string[];
+  };
+  price: string;
+  userAddress: string
 }
+
 
 interface ReviewData {
   id: string;
@@ -42,11 +49,14 @@ const Business: React.FC = () => {
   const [fetchedReviews, setFetchedReviews] = useState<ReviewData[]>([]);
   const [yelpReviews, setYelpReviews] = useState<YelpReview[] | null>(null);
 
+
   useEffect(() => {
     async function getBusiness(): Promise<void> {
       try {
         const yelpResponse = await yelp.get(`/businesses/${id}`);
         setBusiness(yelpResponse.data);
+        console.log('Business Object:', yelpResponse.data);
+
 
         const yelpReviewResponse = await yelp.get(`/businesses/${id}/reviews`)
         setYelpReviews(yelpReviewResponse.data.reviews)
@@ -57,7 +67,7 @@ const Business: React.FC = () => {
     getBusiness();
   }, [id]);
 
-  // Fetch reviews for the business
+
   useEffect(() => {
     async function fetchReviews(): Promise<void> {
       try {
@@ -95,13 +105,29 @@ const Business: React.FC = () => {
     }
   }
 
-
-
   return (
     <div className="business-container">
       <div className="left-column">
         <h1>{business?.name}</h1>
         <img src={business?.image_url} alt={business?.name} />
+        <p>Phone: {business?.phone}</p>
+        <p>
+          <a
+            href={
+              business?.location.display_address
+                ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                  business.location.display_address.join(", ")
+                )}&origin=${encodeURIComponent(business.userAddress || '')}`
+                : '#'
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get Directions
+          </a>
+        </p>
+        <p>Address: {business?.location.display_address.join(', ')}</p>
+        <p>Price: {business?.price}</p>
         <div className="fetched-reviews">
           <h2>Reviews for {business?.name}</h2>
           {fetchedReviews.map((review) => (
@@ -116,7 +142,7 @@ const Business: React.FC = () => {
           <div className="review-container">
             <form onSubmit={handleReviewSubmit}>
               <label htmlFor="review">Leave a review</label>
-              <textarea name="review" id="review" value={newReview} onChange={(e) => setNewReview(e.target.value)}></textarea>
+              <textarea className='review' name="review" id="review" value={newReview} onChange={(e) => setNewReview(e.target.value)}></textarea>
               <label htmlFor="rating">Select Rating:</label>
               <select
                 name="rating"
