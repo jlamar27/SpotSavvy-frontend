@@ -16,10 +16,12 @@
     margin: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s;
+    background-color:#2f5ffe ;
+    color: white;
 }
 
 .business-card:hover {
-     background-color: #273469;
+     background-color: #4b75ff;
 }
 
 .business-image {

@@ -1,30 +1,50 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Searchbar from './Searchbar';
-import { Business } from './ResultsPage'
-import api from '../api/apiConfig';
+import { useNavigate } from 'react-router-dom';
+import SearchBar from './Searchbar'; // Please ensure this import is correct based on your file structure.
+import api from '../api/apiConfig'; // Adjust if your import is different.
+import yelp from '../http/httpConfig'; // Adjust if your import is different.
 import { useCookies } from 'react-cookie';
 
 const Navbar: React.FC = () => {
-  const [cookie, setCookie, removeCookie]: any = useCookies(['csrftoken'])
+  const navigate = useNavigate();
+  const [cookie, setCookie, removeCookie] = useCookies(['csrftoken']);
+
+  // Function to initiate a predefined search.
+  const handlePredefinedSearch = async (searchTerm: string) => {
+    try {
+      // This example uses a fixed location, adjust as necessary for your needs.
+      const response = await yelp.get('/businesses/search', {
+        params: {
+          term: searchTerm,
+          location: 'New York City', 
+          sort_by: 'best_match',
+        },
+      });
+
+      // Redirecting to the results page with the obtained data.
+      navigate('/results', { state: { data: response.data.businesses, term: searchTerm, location: 'New York City' } });
+    } catch (error) {
+      console.error('Error during predefined search:', error);
+    }
+  };
 
   const handleLogout = async (e: any) => {
     e.preventDefault();
     console.log('Logging out...');
-    
+
     try {
-      // Set the X-CSRFToken header value
-      const csrfToken = localStorage.getItem('csrf_token'); // replace with the method to get your CSRF token
+      const csrfToken = localStorage.getItem('csrf_token'); 
       console.log('This is the current CSRF Token Value', csrfToken)
-  
+
       const response = await api.post('/logout/', {}, {
         headers: {
           'X-CSRFToken': csrfToken
         }
       });
-      
+
       console.log("This is the response:", response.data)
-      
+
       if (response.status === 200) {
         // Redirect to the login or home page after logout
         window.location.href = '/auth/signin';
@@ -40,21 +60,21 @@ const Navbar: React.FC = () => {
         <Link to="/" className="navbar-link home-link">
           Home
         </Link>
-        <Searchbar />
+        <SearchBar />
         <Link to="/auth/signin" className="navbar-link signin-link">
           Sign In
         </Link>
       </div>
       <div className="navbar-links">
-        <Link to="/results" className="navbar-link">
+        <div role="link" className="navbar-link" onClick={() => handlePredefinedSearch('restaurants')}>
           Restaurants
-        </Link>
-        <Link to="/results" className="navbar-link">
+        </div>
+        <div role="link" className="navbar-link" onClick={() => handlePredefinedSearch('bars')}>
           Bars
-        </Link>
-        <Link to="/results" className="navbar-link">
+        </div>
+        <div role="link" className="navbar-link" onClick={() => handlePredefinedSearch('shopping')}>
           Shopping
-        </Link>
+        </div>
         <Link to="#" onClick={handleLogout} className="navbar-link logout-link">
           Logout
         </Link>

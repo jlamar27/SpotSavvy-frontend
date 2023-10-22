@@ -86,6 +86,8 @@ const Carousel: React.FC<CarouselProps> = ({data}) => {
   }
 
   return (
+    <>
+    <div className="overlay"/>
     <div className="carousel-container">
     {data.map((business, index) => (
       <div 
@@ -101,6 +103,7 @@ const Carousel: React.FC<CarouselProps> = ({data}) => {
       </div>
     ))}
   </div>
+    </>
 
   );
 };

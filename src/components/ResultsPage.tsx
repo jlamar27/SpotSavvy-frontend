@@ -43,8 +43,8 @@ const ResultsPage: React.FC = () => {
                         <div className="business-details">
                             <h2 className="business-name">{business.name}</h2>
                             <p>Rating: {business.rating}</p>
-                            <p>Review Count: {business.review_count}</p>
-                            <p>Address: {business.location.display_address.join(', ')}</p>
+                            <p>Reviews: {business.review_count}</p>
+                            <p> {business.location.display_address.join(', ')}</p>
                         </div>
                     </div>
                 ))}
