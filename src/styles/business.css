@@ -1,66 +1,114 @@
+/* Base styles for the business container (applies to all screen sizes) */
 .business-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px;
+  background-color: #f6f6f6;
+}
+
+.business-container .left-column {
+  width: 70%;
+}
+
+.business-container .right-column {
+  width: 30%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.business-container h1 {
+  font-size: 28px;
+  margin: 0;
+  padding: 10px 0;
+  color: #d32323;
+}
+
+.business-container h2 {
+  font-size: 24px;
+}
+
+.business-container h3 {
+  font-size: 20px;
+}
+
+.business-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+.business-container textarea,
+.business-container select,
+.business-container button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.business-container .fetched-reviews,
+.business-container .yelp-reviews,
+.business-container .review-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.business-container .yelp-reviews {
+  margin-top: 20px;
+}
+
+.business-container .review-container {
+  position: relative;
+}
+
+.business-container .review {
+  max-width: calc(100% - 2px);
+  color: #333;
+}
+
+/* Responsive styles for smaller screens (e.g., tablets) */
+@media screen and (max-width: 768px) {
+  .business-container {
+    flex-direction: column; /* Stack columns on top of each other */
+  }
+
+  .business-container .left-column,
+  .business-container .right-column {
     width: 100%;
-    padding: 20px;
   }
-  
-  .left-column {
-    flex: 70%;
-  }
-  
-  .right-column {
-    flex: 30%;
-  }
-  
-  .fetched-reviews {
-    padding: 10px;
-    background-color: #f7f7f7;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-  }
-  
-  .yelp-reviews {
-    padding: 10px;
-    background-color: #f7f7f7;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    margin-top: 60px;
-  }
-  
-  .review-container {
-    background-color: #f7f7f7;
-    padding: 10px;
-    border: 1px solid #ddd;
+
+  .business-container .right-column {
     margin-top: 20px;
   }
-  
-  /* Style other elements as needed */
-  h1 {
+
+  .business-container h1 {
     font-size: 24px;
+    padding: 5px 0;
   }
-  
-  h2 {
+
+  .business-container h2 {
     font-size: 20px;
   }
-  
-  h3 {
-    font-size: 16px;
+
+  .business-container h3 {
+    font-size: 18px;
   }
-  
-  img {
-    max-width: 100%;
+
+  .business-container textarea,
+  .business-container select,
+  .business-container button {
+    padding: 8px;
   }
-  
-  textarea,
-  select,
-  button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
+
+  .business-container .fetched-reviews,
+  .business-container .yelp-reviews,
+  .business-container .review-container {
+    padding: 15px;
+    margin-bottom: 15px;
   }
-  
-  /* Add more styles as needed */
-  
-  
+}
