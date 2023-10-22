@@ -13,6 +13,7 @@ const yelp = axios.create({
   baseURL: YELP_API_URL,
 });
 
+console.log('API KEY', apiKey);
 // Interceptors are axios functionality, that allows you to intercept requests and responses
 // Here we're setting the token in localstorage to the Authorization header
 
