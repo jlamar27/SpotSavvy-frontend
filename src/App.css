@@ -37,10 +37,71 @@
   }
 }
 
+/* Base background */
 body {
-  background-color: white;
-  color: #e4d9ff
+  background-color: #F7F7F7; /* Secondary Color */
+  color: #333333; /* Dark Neutral for text */
+  font-family: 'Arial', sans-serif; /* Preferred font */
 }
+
+/* Navigation bar styles */
+.navbar {
+  background-color: #2B44FF; /* Primary Color */
+  text-align: center;
+  padding: 0.5em;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: #FFFFFF; /* White, for contrast against the primary color background */
+  margin: 0 15px;
+  transition: color 0.3s ease;
+}
+
+.navbar-link:hover {
+  color: #FFC107; /* Accent Color */
+  cursor: pointer;
+}
+
+/* Styles for buttons, links, or other CTA elements */
+.button, 
+.button:hover, 
+.button:active, 
+.button:focus {
+  background-color: #FFC107; /* Accent Color */
+  color: #FFFFFF; /* White */
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #E0A800; /* Darker shade of the accent color for hover effect */
+}
+
+/* General container for content sections */
+.container {
+  background-color: #FFFFFF; /* Pure White */
+  border: 1px solid #EEEEEE; /* Light Neutral */
+  padding: 15px;
+}
+
+/* Footer styles */
+.footer {
+  background-color: #333333; /* Dark Neutral */
+  color: #FFFFFF; /* White */
+  text-align: center;
+  padding: 1em 0; /* Adjust to desired space */
+}
+
+/* Add other specific element styles as needed, adhering to the color scheme */
+
 
 @import url("./styles/searchbar.css");
 @import url("./styles/navbar.css");

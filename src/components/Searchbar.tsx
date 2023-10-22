@@ -40,9 +40,8 @@ const SearchBar: React.FC =() => {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button type="submit"><img src="magnifyingGlass.png"></img>Search</button>
       </form>
-      {/* <ResultsPage term={term} location={location} data={data} /> */}
     </div>
   );
 };

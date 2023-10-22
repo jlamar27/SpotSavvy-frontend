@@ -1,30 +1,43 @@
 .navbar {
-    text-align: center;
-  }
-  
-  .navbar-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* if you want to align the items vertically */
-    padding: 0 10px; /* if you want some space on the sides */
-  }
-  
-  .navbar-link {
-    margin: 0 15px; /* or however much space you want between items */
-    text-decoration: none; /* if you don't want underlined links */
-    color: black; /* if your links are not already styled */
-  }
-  
-  /* You might not need these next two styles if your links look correct without them */
-  .home-link {
-    margin-right: auto; /* forces the following content to the right */
-  }
-  
-  .signin-link {
-    margin-left: auto; /* forces the preceding content to the left */
-  }
-  
-  .navbar-links {
-    margin-top: 10px; /* if you want space between this and the main bar */
-  }
-  
+  text-align: center;
+  background-color: #333; /* Example background color */
+}
+
+.navbar-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.navbar-link {
+  margin: 0 15px;
+  text-decoration: none;
+  color: white; /* Make the text color white */
+  transition: color 0.3s ease; /* Makes color change smoothly */
+}
+
+/* Specific styles for the links when hovered */
+.navbar-link:hover {
+  color: #ddd; /* Example color - light grey, changes when link is hovered over */
+  cursor: pointer;
+}
+
+.home-link {
+  margin-right: auto;
+}
+
+.signin-link {
+  margin-left: auto;
+}
+
+.navbar-links {
+  margin-top: 10px;
+  display: flex; /* makes the categories listed horizontally */
+  justify-content: center; /* centers the links */
+}
+
+/* If you want the categories specifically under the search bar and not stretching full width */
+.navbar-links .navbar-link {
+  margin: 0 5px; /* Adjust space between categories */
+}
