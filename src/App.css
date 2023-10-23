@@ -3,6 +3,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+
 
 }
 
@@ -112,4 +114,6 @@ body {
 @import url("./styles/resultsPage.css");
 @import url("./styles/homepage.css");
 @import url("./styles/business.css");
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700&display=swap');
+
 /* @import url("./styles/signin.css"); */

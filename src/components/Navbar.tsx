@@ -9,7 +9,7 @@ import axios from 'axios';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const isLoggedIn = () => {
@@ -17,13 +17,14 @@ const Navbar: React.FC = () => {
     return csrfToken != null;
   };
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      await getCsrfToken(); // Fetch the CSRF token.
-      setIsAuthenticated(isLoggedIn()); // Check if the user is authenticated.
-    };
+  // Function to check and update the authentication status.
+  const checkAuthenticationStatus = () => {
+    setIsAuthenticated(isLoggedIn());
+  };
 
-    initializeAuth();
+  // Check the authentication status when the component mounts.
+  useEffect(() => {
+    checkAuthenticationStatus();
   }, []);
 
   // Function to initiate a predefined search.
@@ -55,7 +56,7 @@ const Navbar: React.FC = () => {
 
       if (response.status === 200) {
         localStorage.removeItem('csrf_token'); // Clear the token.
-        setIsAuthenticated(false); // Update auth state.
+        checkAuthenticationStatus(); // Update auth state.
         navigate('/auth/signin'); // Redirect to signin.
       }
     } catch (error) {
