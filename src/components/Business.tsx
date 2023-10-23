@@ -96,6 +96,11 @@ const Business: React.FC = () => {
       const response = await api.post('review/create/', reviewData);
       if (response.status === 200 && response.data.review_id) {
         const newReviewId = response.data.id;
+        const updatedReviewsResponse = await api.get(`/reviews/${businessId}`);
+        setFetchedReviews(updatedReviewsResponse.data);
+
+        setNewReview('');
+        setRating('1');
       }
     } catch (error) {
       console.error(error);
@@ -112,7 +117,7 @@ const Business: React.FC = () => {
 
   return (
     <div className="business-container">
-      <div className="left-column">
+      <div className="business-details">
         <h1>{business?.name}</h1>
         <img src={business?.image_url} alt={business?.name} />
         <p>Phone: {business?.phone}</p>
@@ -121,7 +126,7 @@ const Business: React.FC = () => {
             href={
               business?.location.display_address
                 ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                  business.location.display_address.join(", ")
+                  business.location.display_address.join(', ')
                 )}&origin=${encodeURIComponent(business.userAddress || '')}`
                 : '#'
             }
@@ -133,61 +138,68 @@ const Business: React.FC = () => {
         </p>
         <p>Address: {business?.location.display_address.join(', ')}</p>
         <p>Price: {business?.price}</p>
-        <div className="fetched-reviews">
-          <h2>Reviews for {business?.name}</h2>
-          {fetchedReviews.map((review) => (
-            <a
-              key={review.id}
-              href={`/${businessId}/reviews/${review.id}?text=${review.text}&rating=${review.rating}&username=${review.username}&date=${review.date}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
+      </div>
+      <div className="reviews">
+        <h2>Reviews for {business?.name}</h2>
+        {fetchedReviews.map((review) => (
+          <a
+            key={review.id}
+            href={`/${businessId}/reviews/${review.id}?text=${review.text}&rating=${review.rating}&username=${review.username}&date=${review.date}`}
+            className="user-review"
+          >
+            <div>
+              <h3>Rating: {review.rating}</h3>
+              <p>{review.text}</p>
+              <p>- {review.username}</p>
+              <p>{formatDateToMMDDYYYY(review.date)}</p>
+            </div>
+          </a>
+        ))}
+        <div className="review-container">
+          <form onSubmit={handleReviewSubmit}>
+            <label htmlFor="review">Leave a review</label>
+            <textarea
+              className="review"
+              name="review"
+              id="review"
+              value={newReview}
+              onChange={(e) => setNewReview(e.target.value)}
+            ></textarea>
+            <label htmlFor="rating">Rating:
+            <select
+              name="rating"
+              id="rating"
+              onChange={(e) => setRating(e.target.value)}
             >
-              <div>
-                <h3>Rating: {review.rating}</h3>
-                <p>{review.text}</p>
-                <p>{review.username}</p>
-                <p>Date: {formatDateToMMDDYYYY(review.date)}</p>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+            </label>
+            <button type="submit">Post Review</button>
+          </form>
+        </div>
+      </div>
+      <div className="yelp-reviews">
+        <h2>Yelp Reviews for {business?.name}</h2>
+        {yelpReviews && yelpReviews.length > 0 ? (
+          yelpReviews.map((yelpReview, index) => (
+            <div key={index} className="yelp-review">
+              <div className="yelp-review-card">
+                <h3>Rating- {yelpReview.rating}</h3>
+                <p>{yelpReview.text}</p>
+                <p> {yelpReview.user.name}</p>
+                <p> {formatDateToMMDDYYYY(yelpReview.time_created)}</p>
               </div>
-            </a>
-          ))}
+            </div>
+          ))
+        ) : (
+          <p>No Yelp reviews available.</p>
+        )}
+      </div>
 
-          <div className="review-container">
-            <form onSubmit={handleReviewSubmit}>
-              <label htmlFor="review">Leave a review</label>
-              <textarea className='review' name="review" id="review" value={newReview} onChange={(e) => setNewReview(e.target.value)}></textarea>
-              <label htmlFor="rating">Select Rating:</label>
-              <select
-                name="rating"
-                id="rating"
-                onChange={(e) => setRating(e.target.value)}
-              >
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-              <button type="submit">Post Review</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className="right-column">
-        <div className="yelp-reviews">
-          <h2>Yelp Reviews for {business?.name}</h2>
-          {yelpReviews && yelpReviews.length > 0 ? (
-            yelpReviews.map((yelpReview, index) => (
-              <div key={index}>
-                <h3>Yelp Rating: {yelpReview.rating}</h3>
-                <p>Yelp Text: {yelpReview.text}</p>
-                <p>Review by: {yelpReview.user.name}</p>
-                <p>Review Date: {formatDateToMMDDYYYY(yelpReview.time_created)}</p>
-              </div>
-            ))
-          ) : (
-            <p>No Yelp reviews available.</p>
-          )}
-        </div>
-      </div>
     </div>
   );
 };
