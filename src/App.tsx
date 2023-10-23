@@ -29,7 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage/>}/>
           <Route path="/:businessId/reviews/:reviewId" element={<Review />} />
-          <Route path='/business/:id' element={<Business />} />
+          <Route path="/business/:businessId" element={<Business />} />.
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/signin" element={<Signin />} />
           <Route path="/results" element={<ResultsPage />} />
