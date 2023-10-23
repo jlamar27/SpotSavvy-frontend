@@ -16,7 +16,6 @@ interface BusinessData {
   userAddress: string
 }
 
-
 interface ReviewData {
   id: string;
   review: string;
@@ -24,7 +23,7 @@ interface ReviewData {
   username: string;
   rating: number;
   text: string;
-  date: string; // You can use the appropriate date format (string) used in your Django model
+  date: string;
 }
 
 interface YelpReview {
@@ -39,10 +38,10 @@ interface YelpReview {
 
 const Business: React.FC = () => {
   const [business, setBusiness] = useState<BusinessData | null>(null);
-  const { id } = useParams();
+  const { businessId } = useParams();
   const navigate = useNavigate();
   const [newReview, setNewReview] = useState('');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState('1');
   const [fetchedReviews, setFetchedReviews] = useState<ReviewData[]>([]);
   const [yelpReviews, setYelpReviews] = useState<YelpReview[] | null>(null);
 
@@ -50,25 +49,24 @@ const Business: React.FC = () => {
   useEffect(() => {
     async function getBusiness(): Promise<void> {
       try {
-        const yelpResponse = await yelp.get(`/businesses/${id}`);
+        const yelpResponse = await yelp.get(`/businesses/${businessId}`);
         setBusiness(yelpResponse.data);
-        console.log('Business Object:', yelpResponse.data);
 
 
-        const yelpReviewResponse = await yelp.get(`/businesses/${id}/reviews`)
+        const yelpReviewResponse = await yelp.get(`/businesses/${businessId}/reviews`)
         setYelpReviews(yelpReviewResponse.data.reviews)
       } catch (error) {
         console.error(error);
       }
     }
     getBusiness();
-  }, [id]);
+  }, [businessId]);
 
 
   useEffect(() => {
     async function fetchReviews(): Promise<void> {
       try {
-        const response = await api.get(`/reviews/${id}`);
+        const response = await api.get(`/reviews/${businessId}`);
         console.log(response.data)
         setFetchedReviews(response.data);
       } catch (error) {
@@ -76,31 +74,40 @@ const Business: React.FC = () => {
       }
     }
     fetchReviews();
-  }, [id]);
+  }, [businessId]);
 
   async function handleReviewSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
       const reviewData = {
+        id: '',
         restaurant_id: '',
         rating: '',
         text: ''
       };
+      console.log(reviewData)
       reviewData.text = newReview;
       reviewData.rating = rating
-      if (id) {
-        reviewData.restaurant_id = id;
+      if (businessId) {
+        reviewData.restaurant_id = businessId;
       }
 
-      console.log(id)
+      console.log(businessId)
       const response = await api.post('review/create/', reviewData);
       if (response.status === 200 && response.data.review_id) {
-        const newReviewId = response.data.review_id;
-        navigate(`/${id}/reviews/${newReviewId}`);
+        const newReviewId = response.data.id;
       }
     } catch (error) {
       console.error(error);
     }
+  }
+
+  function formatDateToMMDDYYYY(dateString: string) {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Add 1 because months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
   }
 
   return (
@@ -129,12 +136,18 @@ const Business: React.FC = () => {
         <div className="fetched-reviews">
           <h2>Reviews for {business?.name}</h2>
           {fetchedReviews.map((review) => (
-            <div key={review.id}>
-              <h3>Rating: {review.rating}</h3>
-              <p>Text: {review.text}</p>
-              <p>Written by: {review.username}</p>
-              <p>Date: {review.date}</p>
-            </div>
+            <a
+              key={review.id}
+              href={`/${businessId}/reviews/${review.id}?text=${review.text}&rating=${review.rating}&username=${review.username}&date=${review.date}`}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <div>
+                <h3>Rating: {review.rating}</h3>
+                <p>{review.text}</p>
+                <p>{review.username}</p>
+                <p>Date: {formatDateToMMDDYYYY(review.date)}</p>
+              </div>
+            </a>
           ))}
 
           <div className="review-container">
@@ -167,7 +180,7 @@ const Business: React.FC = () => {
                 <h3>Yelp Rating: {yelpReview.rating}</h3>
                 <p>Yelp Text: {yelpReview.text}</p>
                 <p>Review by: {yelpReview.user.name}</p>
-                <p>Review Date: {yelpReview.time_created}</p>
+                <p>Review Date: {formatDateToMMDDYYYY(yelpReview.time_created)}</p>
               </div>
             ))
           ) : (

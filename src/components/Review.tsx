@@ -1,45 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import api from '../http/httpConfig';
+import { useNavigate, useParams, useLocation } from 'react-router-dom'; // Import useLocation
+import api from '../api/apiConfig';
 import DeleteReviewModal from './DeleteReviewModal';
 
 export default function Review() {
   const { reviewId, businessId } = useParams();
   const navigate = useNavigate();
-  const [review, setReview] = useState<any>(null);
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const rating = searchParams.get('rating');
+  const text = searchParams.get('text');
+  const username = searchParams.get('username');
+  const date = searchParams.get('date');
+
+  const [review, setReview] = useState<any>({
+    rating,
+    text,
+    user: { username },
+    date,
+  });
   const [editedReview, setEditedReview] = useState('');
   const [editedRating, setEditedRating] = useState('');
-  const [isModalOpen, setModalOpen] = useState(false)
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [editSuccess, setEditSuccess] = useState(false);
 
-  useEffect(() => {
-    async function fetchReview(): Promise<void> {
-      try {
-        const response = await api.get(`/reviews/${reviewId}`);
-        setReview(response.data);
 
-        // Populate the edit fields with the existing review data
-        setEditedReview(response.data.review);
-        setEditedRating(response.data.rating);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchReview();
-  }, [reviewId]);
+  function formatDateToMMDDYYYY(dateString: string) {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Add 1 because months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  }
 
-  // Handle editing the review
+  // useEffect(() => {
+  //   async function fetchReview(): Promise<void> {
+  //     try {
+  //       const response = await api.get(`/reviews/${reviewId}`);
+  //       const reviewData = response.data; // Assuming the API response has the necessary structure
+
+  //       // Populate the edit fields with the existing review data
+  //       setEditedReview(reviewData.review);
+  //       setEditedRating(reviewData.rating);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  //   fetchReview();
+  // }, [reviewId]);
+
   async function handleEditReview(e: React.FormEvent) {
     e.preventDefault();
     try {
       const editedReviewData = {
         id: reviewId,
-        review: editedReview,
+        restaurant_id: businessId,
+        text: editedReview,
         rating: editedRating,
       };
 
-      const response = await api.put(`/reviews/${reviewId}`, editedReviewData);
+      const response = await api.put(`/review/edit/${reviewId}/`, editedReviewData);
       if (response.status === 200) {
-        // inform user that their edit has gone through and redirect back to business page figure out how were goning to get businessid
+        setEditSuccess(true);
+
+        // After a short delay, navigate back to the business page
+        setTimeout(() => {
+          setEditSuccess(false);
+          navigate(`/business/${businessId}`);
+        }, 3000); // Adjust the delay time as needed
       }
     } catch (error) {
       console.error(error);
@@ -48,9 +77,10 @@ export default function Review() {
 
   async function deleteReview() {
     try {
-      const response = await api.delete(`/review/delete/${reviewId}`);
+      console.log('What is this', reviewId)
+      const response = await api.delete(`/review/delete/${reviewId}/`);
       if (response.status === 204) {
-        setModalOpen(true)
+        setModalOpen(true);
       }
     } catch (error) {
       console.error(error);
@@ -60,6 +90,7 @@ export default function Review() {
   return (
     <div>
       <h1>Edit Review</h1>
+      {editSuccess && <p className="success-message">Edit successful. Redirecting...</p>}
       <form onSubmit={handleEditReview}>
         <label htmlFor="editedReview">Edit your review</label>
         <textarea
@@ -88,15 +119,17 @@ export default function Review() {
           <h3>Rating: {review.rating}</h3>
           <p>Text: {review.text}</p>
           <p>Written by: {review.user.username}</p>
-          <p>Date: {review.date}</p>
+          <p>Date: {formatDateToMMDDYYYY(review.date)}</p>
           <button onClick={deleteReview}>Delete Review</button>
         </div>
       )}
-      <DeleteReviewModal isOpen={isModalOpen} onClose={() => {
-        // Close the modal and navigate back to the business page
-        setModalOpen(false);
-        navigate(`/business/${businessId}`); // Replace with the actual URL
-      }} />
+      <DeleteReviewModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          navigate(`/business/${businessId}`);
+        }}
+      />
     </div>
   );
 }
