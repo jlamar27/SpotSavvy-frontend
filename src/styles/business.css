@@ -1,114 +1,206 @@
-/* Base styles for the business container (applies to all screen sizes) */
 .business-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   width: 100%;
   padding: 20px;
   background-color: #f6f6f6;
 }
 
-.business-container .left-column {
-  width: 70%;
-}
-
-.business-container .right-column {
-  width: 30%;
+.business-details {
   background-color: #fff;
   border: 1px solid #ddd;
   padding: 20px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
-.business-container h1 {
+.business-details h1 {
   font-size: 28px;
   margin: 0;
   padding: 10px 0;
-  color: #d32323;
+  color: black;
 }
 
-.business-container h2 {
-  font-size: 24px;
+.business-details img {
+  height: 60vh;
+
 }
 
-.business-container h3 {
-  font-size: 20px;
-}
-
-.business-container img {
-  max-width: 100%;
-  height: auto;
-}
-
-.business-container textarea,
-.business-container select,
-.business-container button {
-  width: 100%;
-  padding: 10px;
+.business-details p {
   margin: 5px 0;
 }
 
-.business-container .fetched-reviews,
-.business-container .yelp-reviews,
-.business-container .review-container {
+.business-details a {
+  text-decoration: none;
+  color: #333;
+  display: inline-block;
+  background-color: #f0f0f0; 
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s; /* Smooth color transition */
+}
+
+.business-details a:hover {
+  background-color: #333; /* Background color on hover */
+  color: #fff; /* Text color on hover */
+  cursor: pointer; /* Change cursor on hover to indicate clickability */
+}
+
+
+.review-container {
   background-color: #fff;
   border: 1px solid #ddd;
   padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.business-container .yelp-reviews {
   margin-top: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
-.business-container .review-container {
+.review-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.review-container label {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.review-container textarea,
+.review-container select {
+  width: 100%; /* Full width */
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.review-container select {
+  width: auto; /* Auto width for the select element */
+  padding: 5px; /* Adjust padding for a more compact look */
+}
+
+
+.review-container button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.review-container button:hover {
+  background-color: #555;
+}
+
+
+.user-review {
+  display: block;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.3s;
+}
+
+.user-review:hover {
+  background-color: #f0f0f0; 
+}
+
+.user-review div {
+  text-align: left;
+}
+
+.user-review h3 {
+  text-align: center;
+  font-size: 20px;
+  margin: 0;
+}
+
+.user-review p {
+  margin: 5px 0;
+}
+
+.user-review p:last-child {
+  text-align: right;
+  font-size: 14px;
+  margin: 0;
+}
+
+.review-container {
   position: relative;
 }
 
-.business-container .review {
+.review {
   max-width: calc(100% - 2px);
   color: #333;
 }
 
-/* Responsive styles for smaller screens (e.g., tablets) */
+
+.yelp-reviews {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.yelp-review {
+  margin-top: 20px;
+}
+
+.yelp-review-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 10px 0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.yelp-review h3 {
+  font-size: 20px;
+}
+
+.yelp-review p {
+  margin: 5px 0;
+}
+
+
+
 @media screen and (max-width: 768px) {
-  .business-container {
-    flex-direction: column; /* Stack columns on top of each other */
-  }
-
-  .business-container .left-column,
-  .business-container .right-column {
-    width: 100%;
-  }
-
-  .business-container .right-column {
-    margin-top: 20px;
-  }
-
-  .business-container h1 {
+  .business-details h1 {
     font-size: 24px;
     padding: 5px 0;
   }
 
-  .business-container h2 {
+  .reviews h2 {
     font-size: 20px;
   }
 
-  .business-container h3 {
+  .user-review h3 {
     font-size: 18px;
   }
 
-  .business-container textarea,
-  .business-container select,
-  .business-container button {
-    padding: 8px;
+  .user-review p {
+    margin: 3px 0;
   }
 
-  .business-container .fetched-reviews,
-  .business-container .yelp-reviews,
-  .business-container .review-container {
-    padding: 15px;
-    margin-bottom: 15px;
+  .user-review p:last-child {
+    font-size: 12px;
+  }
+
+  .yelp-review h3 {
+    font-size: 18px;
+  }
+
+  .yelp-review p {
+    margin: 3px 0;
   }
 }
