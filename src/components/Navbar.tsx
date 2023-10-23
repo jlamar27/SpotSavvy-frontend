@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import SearchBar from './Searchbar'; 
 import api, { getCsrfToken } from '../api/apiConfig'; 
 import ResultsPage from './ResultsPage';
-import yelp from '../api/apiConfig';
+import yelp from '../http/httpConfig';
 import axios from 'axios';
 
 const Navbar: React.FC = () => {
