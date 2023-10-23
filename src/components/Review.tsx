@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom'; // Import useLocation
-import api from '../http/httpConfig';
+import api from '../api/apiConfig';
 import DeleteReviewModal from './DeleteReviewModal';
 
 export default function Review() {
@@ -34,32 +34,33 @@ export default function Review() {
     return `${month}/${day}/${year}`;
   }
 
-  useEffect(() => {
-    async function fetchReview(): Promise<void> {
-      try {
-        const response = await api.get(`/reviews/${reviewId}`);
-        const reviewData = response.data; // Assuming the API response has the necessary structure
+  // useEffect(() => {
+  //   async function fetchReview(): Promise<void> {
+  //     try {
+  //       const response = await api.get(`/reviews/${reviewId}`);
+  //       const reviewData = response.data; // Assuming the API response has the necessary structure
 
-        // Populate the edit fields with the existing review data
-        setEditedReview(reviewData.review);
-        setEditedRating(reviewData.rating);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchReview();
-  }, [reviewId]);
+  //       // Populate the edit fields with the existing review data
+  //       setEditedReview(reviewData.review);
+  //       setEditedRating(reviewData.rating);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  //   fetchReview();
+  // }, [reviewId]);
 
   async function handleEditReview(e: React.FormEvent) {
     e.preventDefault();
     try {
       const editedReviewData = {
         id: reviewId,
-        review: editedReview,
+        restaurant_id: businessId,
+        text: editedReview,
         rating: editedRating,
       };
 
-      const response = await api.put(`/review/edit/${reviewId}`, editedReviewData);
+      const response = await api.put(`/review/edit/${reviewId}/`, editedReviewData);
       if (response.status === 200) {
         setEditSuccess(true);
 
@@ -76,7 +77,8 @@ export default function Review() {
 
   async function deleteReview() {
     try {
-      const response = await api.delete(`/review/delete/${reviewId}`);
+      console.log('What is this', reviewId)
+      const response = await api.delete(`/review/delete/${reviewId}/`);
       if (response.status === 204) {
         setModalOpen(true);
       }
