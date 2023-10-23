@@ -14,10 +14,7 @@ interface ReviewData {
   id: string;
   review: string;
   restaurant_id: string;
-  user: {
-    id: string;
-    username: string;
-  };
+  username: string;
   rating: number;
   text: string;
   date: string; // You can use the appropriate date format (string) used in your Django model
@@ -62,6 +59,7 @@ const Business: React.FC = () => {
     async function fetchReviews(): Promise<void> {
       try {
         const response = await api.get(`/reviews/${id}`);
+        console.log(response.data)
         setFetchedReviews(response.data);
       } catch (error) {
         console.error(error);
@@ -108,7 +106,7 @@ const Business: React.FC = () => {
             <div key={review.id}>
               <h3>Rating: {review.rating}</h3>
               <p>Text: {review.text}</p>
-              <p>Written by: {review.user.username}</p>
+              <p>Written by: {review.username}</p>
               <p>Date: {review.date}</p>
             </div>
           ))}
