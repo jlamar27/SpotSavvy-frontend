@@ -23,8 +23,7 @@ const api = axios.create({
 
 export const getCsrfToken = async () => {
   try {
-    // Make a request to the server endpoint that provides the CSRF token.
-    // The server should set a cookie containing the CSRF token in response to this request.
+   
     await api.get('/get-csrf-token/'); // this should be your server endpoint for initializing a session and getting a CSRF token
   } catch (error) {
     console.error('Could not get CSRF token', error);
